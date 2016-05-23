@@ -7,6 +7,7 @@ html(lang="en")
 	body
 		h1 Enter in your personal information to find a Budde
 		form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit/")
+			input(type="hidden", name="_csrf", value="#{csrf}")
 			p First Name
 			input(name="firstName", type="text", placeholder="John")
 			p Last Name
@@ -17,4 +18,5 @@ html(lang="en")
 			textarea(name="exerciseBrief", form="budde-form", rows=4, cols=50)
 			br
 			input(type="submit", value="Find a Budde!")
+
 

@@ -22,6 +22,20 @@ app.set('views', './views');
 //Serve static files
 app.use(express.static('public'));
 
+//Cookies and CSRF
+var cookieParser = require('cookie-parser');
+app.use(cookieParser('7$sJ9M#kR[Z9%hX31LW^Rswu(!w'));
+
+var csrf = require('csurf');
+app.use(csrf({cookie: true}));
+
+//Add CSRF Token to the response on every request
+app.use(function(req, res, next){
+		res.locals.csrftoken = req.csrfToken();
+		next();
+});
+
+
 
 //-----------ROUTING----------------//
 
@@ -33,7 +47,7 @@ router.get('/', function(req, res){
 });
 
 router.get('/findBudde/$', function(req, res){
-		res.render('findbudde.pug');
+		res.render('findbudde.pug', {"csrf": res.locals.csrftoken});
 });
 
 router.post('/findBudde/submit/$', function(req, res){
