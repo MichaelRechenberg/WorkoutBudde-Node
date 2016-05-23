@@ -13,6 +13,7 @@ var router = express.Router();
 var bodyParser = require('body-parser');
 
 var pug = require('pug');
+app.set('views', './views');
 
 
 //-----------ROUTING----------------//
@@ -23,7 +24,7 @@ app.use(bodyParser.json());
 
 router.get('/', function(req, res){
     console.log('Front page reached');
-		res.send(pug.renderFile('views/frontpage.jade', {pretty: true}));
+		res.render('frontpage.pug', {foo: 'Michael Rechenberg'});
 });
 
 app.use(router);
