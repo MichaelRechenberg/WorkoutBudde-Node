@@ -25,13 +25,18 @@ app.set('views', './views');
 
 router.get('/', function(req, res){
     console.log('Front page reached');
-		res.render('frontpage.pug', {foo: 'Michael Rechenberg'});
+		res.render('frontpage.pug');
 });
 
-router.post('/budde/', function(req, res){
+router.get('/findBudde/$', function(req, res){
+		res.render('findbudde.pug');
+});
+
+router.post('/findBudde/submit/$', function(req, res){
 		console.log(req.body);
 		res.send("Thank you for your submission!");
 });
+
 
 app.use(router);
 
