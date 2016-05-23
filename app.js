@@ -15,8 +15,12 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+//Pug Template Engine
 var pug = require('pug');
 app.set('views', './views');
+
+//Serve static files
+app.use(express.static('public'));
 
 
 //-----------ROUTING----------------//
