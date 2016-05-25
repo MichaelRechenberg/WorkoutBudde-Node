@@ -12,18 +12,19 @@ html(lang="en")
     script(src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
   
   body
-    container-fluid
-      jumbotron
+    .container-fluid
+      .jumbotron
         h1 Enter Info to Find A Budde!
-    form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit/")
-      input(type="hidden", name="_csrf", value=csrfToken)
-      p First Name
-      input(name="firstName", type="text", placeholder="John")
-      p Last Name
-      input(name="lastName", type="text", placeholder="Doe") 
-      p Area Code
-      input(name="areaCode", type="text") 
-      p Type in the exercises you like here
-      textarea(name="exerciseBrief", form="budde-form", rows=4, cols=50)
-      br
-      input(type="submit", value="Find a Budde!")
+    .form-group
+      form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit/")
+        input(class="form-control", type="hidden", name="_csrf", value=csrfToken)
+        p First Name
+        input(class="form-control", name="firstName", type="text", placeholder="John")
+        p Last Name
+        input(class="form-control", name="lastName", type="text", placeholder="Doe") 
+        p Area Code
+        input(class="form-control", name="areaCode", type="text") 
+        p Type in the exercises you like here
+        textarea(class="form-control", name="exerciseBrief", form="budde-form")
+        br
+        input(type="submit", value="Find a Budde!")
