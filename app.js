@@ -47,7 +47,7 @@ router.get('/', function(req, res){
 });
 
 router.get('/findBudde/$', function(req, res){
-		res.render('findbudde.pug', { csrfToken: res.locals.csrftoken, foo : "Hello World"});
+		res.render('findbudde.pug', { "csrfToken": res.locals.csrftoken});
 });
 
 router.post('/findBudde/submit/$', function(req, res){
