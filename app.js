@@ -4,7 +4,7 @@
   */
 
 //Init Express app and Router
-var PORTNUMBER = 3000;
+var PORTNUMBER = 80;
 var express = require('express');
 var app = express();
 var router = express.Router();
