@@ -1,23 +1,29 @@
 doctype html
 html(lang="en")
-	head
-		title Find a Budde
-		meta(name="viewport", content="width=device-width, initial-scale=1.0")
-		meta(charset="utf-8")
-	body
-		h1 Enter in your personal information to find a Budde
-		form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit/")
-			input(type="hidden", name="_csrf", value=csrfToken)
-			p First Name
-			input(name="firstName", type="text", placeholder="John")
-			p Last Name
-			input(name="lastName", type="text", placeholder="Doe") 
-			p Area Code
-			input(name="areaCode", type="text") 
-			p Type in the exercises you like here
-			textarea(name="exerciseBrief", form="budde-form", rows=4, cols=50)
-			br
-			input(type="submit", value="Find a Budde!")
-
-
-
+  head
+    title Find a Budde
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset="utf-8")
+    //Bootstrap Stylesheet Setup
+    link(rel="stylesheet", href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    //jQuery library
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+    //Javascript for Bootstrap
+    script(src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+  
+  body
+    container-fluid
+      jumbotron
+        h1 Enter Info to Find A Budde!
+    form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit/")
+      input(type="hidden", name="_csrf", value=csrfToken)
+      p First Name
+      input(name="firstName", type="text", placeholder="John")
+      p Last Name
+      input(name="lastName", type="text", placeholder="Doe") 
+      p Area Code
+      input(name="areaCode", type="text") 
+      p Type in the exercises you like here
+      textarea(name="exerciseBrief", form="budde-form", rows=4, cols=50)
+      br
+      input(type="submit", value="Find a Budde!")
