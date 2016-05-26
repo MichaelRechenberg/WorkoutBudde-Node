@@ -4,7 +4,7 @@
   */
 
 //Init Express app and Router
-var PORTNUMBER = 80;
+var PORTNUMBER = 3000;
 var express = require('express');
 var app = express();
 var router = express.Router();
@@ -36,7 +36,6 @@ app.use(function(req, res, next){
 });
 
 
-
 //-----------ROUTING----------------//
 
 
@@ -46,11 +45,11 @@ router.get('/', function(req, res){
 		res.render('frontpage.pug');
 });
 
-router.get('/findBudde/$', function(req, res){
+router.get('/findBudde$', function(req, res){
 		res.render('findbudde.pug', { "csrfToken": res.locals.csrftoken});
 });
 
-router.post('/findBudde/submit/$', function(req, res){
+router.post('/findBudde/submit$', function(req, res){
 		console.log(req.body);
 		res.send("Thank you for your submission!");
 });
