@@ -22,7 +22,7 @@ html(lang="en")
           input(class="form-control", name="lastName", type="text", placeholder="Doe", pattern="[A-Za-z\-]+", required) 
           br
           Street Address
-          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z. ]+", required) 
+          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z.\- ]+", required) 
           br
           |City/Town
           input(class="form-control", name="city", type="text", placeholder="Swoleville", pattern="[A-Za-z\- ]+", required) 
@@ -52,11 +52,11 @@ html(lang="en")
           div(id="intensityOption")
             p How Intense Do You Workout?
             label Casual
-              input(class="form-control", name="intensity", type="radio", value="Casual") 
+              input(class="form-control", name="intensity", type="radio", value="Casual", required) 
             label Moderate
-              input(class="form-control", name="intensity", type="radio", value="Moderate") 
+              input(class="form-control", name="intensity", type="radio", value="Moderate", required) 
             label Intense
-              input(class="form-control", name="intensity", type="radio", value="Intense") 
+              input(class="form-control", name="intensity", type="radio", value="Intense", required) 
           p Type Any Exerices That You Do But Aren't Listed Above Here
           textarea(class="form-control", name="exerciseBrief", form="budde-form")
           br
