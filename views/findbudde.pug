@@ -22,7 +22,7 @@ html(lang="en")
           input(class="form-control", name="lastName", type="text", placeholder="Doe", pattern="[A-Za-z\-]+", required) 
           br
           Street Address
-          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z.\- ]+", required) 
+          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z. \-]+", required) 
           br
           |City/Town
           input(class="form-control", name="city", type="text", placeholder="Swoleville", pattern="[A-Za-z\- ]+", required) 
@@ -34,13 +34,13 @@ html(lang="en")
           h2 Enter In The Information Of Where You Workout
             h3 If you workout location is not fixed (i.e. outside, not a gym), leave this information blank
           |Gym/Location Name
-          input(class="form-control", name="location-name", type="text", pattern="[A-Za-z\-.]+")
+          input(class="form-control", name="location-name", type="text", pattern="[A-Za-z. \-]+")
           br
           |Street Address
-          input(class="form-control", name="location-address", type="text", pattern="[0-9]+ [A-Za-z\-. ]+") 
+          input(class="form-control", name="location-address", type="text", pattern="[0-9]+ [A-Za-z. \-]+") 
           br
           |City/Town
-          input(class="form-control", name="location-city", type="text", pattern="[A-Za-z\- ]+") 
+          input(class="form-control", name="location-city", type="text", pattern="[A-Za-z \-]+") 
           br
 
         div(id="exercise-info") 

@@ -23,6 +23,7 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 //Cookies and CSRF
+//req.cookies
 var cookieParser = require('cookie-parser');
 app.use(cookieParser('7$sJ9M#kR[Z9%hX31LW^Rswu(!w'));
 
@@ -31,10 +32,15 @@ app.use(csrf({cookie: true}));
 
 //Add CSRF Token to the response on every request
 app.use(function(req, res, next){
-		res.locals.csrftoken = req.csrfToken();
-		next();
+    res.locals.csrftoken = req.csrfToken();
+    next();
 });
 
+app.use('findBudde/submit', function(req, res, next){
+  
+  res.header('Cache-Control', 'no-cache, max-age=0, must-revalidate, nostore');
+  next(); 
+});
 
 //-----------ROUTING----------------//
 
@@ -42,16 +48,21 @@ app.use(function(req, res, next){
 
 router.get('/', function(req, res){
     console.log('Front page reached');
-		res.render('frontpage.pug');
+    res.render('frontpage.pug');
 });
 
 router.get('/findBudde$', function(req, res){
-		res.render('findbudde.pug', { "csrfToken": res.locals.csrftoken});
+    res.render('findbudde.pug', { "csrfToken": res.locals.csrftoken});
 });
 
 router.post('/findBudde/submit$', function(req, res){
-		console.log(req.body);
-		res.send("Thank you for your submission!");
+  console.log(req.body);
+  res.redirect("/findbudde/submit/success");
+});
+
+router.get('/findBudde/submit/success$', function(req, res){
+    res.send("Thank you for your submission!");
+    res.end();
 });
 
 
