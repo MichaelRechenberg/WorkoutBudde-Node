@@ -26,9 +26,13 @@ html(lang="en")
           | City/Town
           input(class="form-control", name="city", type="text", placeholder="Swoleville", pattern="[A-Za-z\- ]+", required) 
           br
-          Area Code
+          |Area Code
           input(class="form-control", name="areaCode", type="text", pattern="[0-9]{5}") 
           br
+        div(id="workout-location-info")
+          p Enter In The Information Of Where You Workout
+          
+          
         div(id="exercises") 
           p Check The Exercises You Enjoy
         //Need to enforce that at least one of these options is selected
