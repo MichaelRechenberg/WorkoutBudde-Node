@@ -13,40 +13,53 @@ html(lang="en")
     .container-fluid
       form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit")
         input(class="form-control", type="hidden", name="_csrf", value=csrfToken)
-        div(id="personal-information")
+        div(id="personal-info")
+          h2 Enter in Your Personal Information
           |First Name
-          input(class="form-control", name="firstName", type="text", placeholder="John", pattern="[A-Za-z]+", required)
+          input(class="form-control", name="firstName", type="text", placeholder="John", pattern="[A-Za-z\-]+", required)
           br
           |Last Name
-          input(class="form-control", name="lastName", type="text", placeholder="Doe", pattern="[A-Za-z]+", required) 
+          input(class="form-control", name="lastName", type="text", placeholder="Doe", pattern="[A-Za-z\-]+", required) 
           br
           Street Address
-          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z ]+", required) 
+          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z. ]+", required) 
           br
-          | City/Town
+          |City/Town
           input(class="form-control", name="city", type="text", placeholder="Swoleville", pattern="[A-Za-z\- ]+", required) 
           br
           |Area Code
-          input(class="form-control", name="areaCode", type="text", pattern="[0-9]{5}") 
+          input(class="form-control", name="areaCode", type="text", pattern="[0-9]{5}", required) 
           br
         div(id="workout-location-info")
-          p Enter In The Information Of Where You Workout
-          
-          
-        div(id="exercises") 
-          p Check The Exercises You Enjoy
-        //Need to enforce that at least one of these options is selected
-        div(id="intensityOption")
-          p How Intense Do You Workout?
-          label Casual
-            input(class="form-control", name="intensity", type="radio", value="Casual") 
-          label Moderate
-            input(class="form-control", name="intensity", type="radio", value="Moderate") 
-          label Intense
-            input(class="form-control", name="intensity", type="radio", value="Intense") 
-        p Type in Here Any Exerices You Didn't See Listed Above
-        textarea(class="form-control", name="exerciseBrief", form="budde-form")
-        br
+          h2 Enter In The Information Of Where You Workout
+            h3 If you workout location is not fixed (i.e. outside, not a gym), leave this information blank
+          |Gym/Location Name
+          input(class="form-control", name="location-name", type="text", pattern="[A-Za-z\-.]+")
+          br
+          |Street Address
+          input(class="form-control", name="location-address", type="text", pattern="[0-9]+ [A-Za-z\-. ]+") 
+          br
+          |City/Town
+          input(class="form-control", name="location-city", type="text", pattern="[A-Za-z\- ]+") 
+          br
+
+        div(id="exercise-info") 
+          //TODO: Add exercise frequency (M,W,T,R...and a time range)
+          //filled out by main.js 
+          div(id="exercises") 
+            p Check The Exercises You Enjoy
+          //Need to enforce that at least one of these options is selected
+          div(id="intensityOption")
+            p How Intense Do You Workout?
+            label Casual
+              input(class="form-control", name="intensity", type="radio", value="Casual") 
+            label Moderate
+              input(class="form-control", name="intensity", type="radio", value="Moderate") 
+            label Intense
+              input(class="form-control", name="intensity", type="radio", value="Intense") 
+          p Type Any Exerices That You Do But Aren't Listed Above Here
+          textarea(class="form-control", name="exerciseBrief", form="budde-form")
+          br
         input(type="submit", value="Find a Budde!")
 
     //Bootstrap Stylesheet Setup
