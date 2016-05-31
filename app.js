@@ -37,11 +37,6 @@ app.use(function(req, res, next){
     next();
 });
 
-app.use('findBudde/submit', function(req, res, next){
-  
-  res.header('Cache-Control', 'no-cache, max-age=0, must-revalidate, nostore');
-  next(); 
-});
 
 //-----------ROUTING----------------//
 
