@@ -24,19 +24,7 @@ app.set('views', './views');
 //Serve static files from public directory, located in root directory
 app.use(express.static('public'));
 
-//Cookies and CSRF
-//req.cookies
-var cookieParser = require('cookie-parser');
-app.use(cookieParser('VblaEgIcr3C2B4qJER3a9iJOSaugMHEjDquvmA4'));
-var csrf = require('csurf');
-app.use(csrf({cookie: true}));
-
-//Add CSRF Token to the response on every request
-app.use(function(req, res, next){
-    res.locals.csrftoken = req.csrfToken();
-    next();
-});
-
+//Session Middleware
 var session = require('express-session');
 app.use(session({
   secret: 'VblaEgIcr3C2B4qJER3a9iJOSaugMHEjDquvmA4',
@@ -44,9 +32,22 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+//Passport for Authentication
 var passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
+
+//CSRF
+//Uses session middleware rather than cookie-parser
+var csrf = require('csurf');
+app.use(csrf({}));
+
+//Add CSRF Token to the response on every request
+app.use(function(req, res, next){
+    res.locals.csrftoken = req.csrfToken();
+    next();
+});
+
 
 //-------------------------------------------------------//
 
