@@ -9,7 +9,9 @@ var express = require('express');
 var app = express();
 var router = express.Router();
 
-//Init middleware
+
+//-----------------MIDDLEWARE---------------------//
+
 var bodyParser = require('body-parser');
 //all forms will be put in req.body.[input tag's name attribute]
 app.use(bodyParser.urlencoded({extended: true}));
@@ -19,15 +21,13 @@ app.use(bodyParser.json());
 var pug = require('pug');
 app.set('views', './views');
 
-//Serve static files
+//Serve static files from public directory, located in root directory
 app.use(express.static('public'));
 
 //Cookies and CSRF
 //req.cookies
 var cookieParser = require('cookie-parser');
 app.use(cookieParser('7$sJ9M#kR[Z9%hX31LW^Rswu(!w'));
-
-
 var csrf = require('csurf');
 app.use(csrf({cookie: true}));
 
@@ -36,6 +36,20 @@ app.use(function(req, res, next){
     res.locals.csrftoken = req.csrfToken();
     next();
 });
+
+var session = require('express-session');
+app.use(session({
+  secret: 'VblaEgIcr3C2B4qJER3a9iJOSaugMHEjDquvmA4',
+  resave: true,
+  saveUninitialized: true,
+}));
+
+var passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+
+//-------------------------------------------------------//
+
 
 
 //-----------ROUTING----------------//
