@@ -27,7 +27,7 @@ app.use(express.static('public'));
 //Cookies and CSRF
 //req.cookies
 var cookieParser = require('cookie-parser');
-app.use(cookieParser('7$sJ9M#kR[Z9%hX31LW^Rswu(!w'));
+app.use(cookieParser('VblaEgIcr3C2B4qJER3a9iJOSaugMHEjDquvmA4'));
 var csrf = require('csurf');
 app.use(csrf({cookie: true}));
 
