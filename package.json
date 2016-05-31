@@ -8,7 +8,9 @@
     "cookie-parser": "^1.4.2",
     "csurf": "^1.8.3",
     "express": "^4.13.4",
-    "pug": "^2.0.0-alpha8"
+    "pg-promise": "^4.3.5",
+    "pug": "^2.0.0-alpha8",
+    "request": "^2.72.0"
   },
   "devDependencies": {},
   "scripts": {

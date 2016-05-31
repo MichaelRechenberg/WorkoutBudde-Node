@@ -27,6 +27,7 @@ app.use(express.static('public'));
 var cookieParser = require('cookie-parser');
 app.use(cookieParser('7$sJ9M#kR[Z9%hX31LW^Rswu(!w'));
 
+
 var csrf = require('csurf');
 app.use(csrf({cookie: true}));
 
@@ -61,7 +62,7 @@ router.post('/findBudde/submit$', function(req, res){
 });
 
 router.get('/findBudde/submit/success$', function(req, res){
-    res.send("Thank you for your submission!");
+    res.render('success.pug');
     res.end();
 });
 
