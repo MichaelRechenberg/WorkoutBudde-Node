@@ -11,7 +11,7 @@ var helpers = require('./helpers.js');
 //Init Express app and Router
 //TODO: Set PORTNUMBER to 443 in production
 var PORTNUMBER = 8080;
-var appPrivIP = '10.136.7.139';
+var appPrivIP = '10.136.7.139'; 
 var express = require('express');
 var app = express();
 var router = express.Router();
@@ -32,12 +32,16 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 //Session Middleware
-//TODO: change store to redis for production
-//TODO: Reinstall cookie-parser if I scrap the sessions
 //req.session
 var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
 app.use(session({
   secret: 'VblaEgIcr3C2B4qJER3a9iJOSaugMHEjDquvmA4',
+  store: new RedisStore({
+    host: 'localhost',
+    port: 6379,
+    ttl: 250
+  }),
   resave: true,
   saveUninitialized: true,
   httpOnly: true,
@@ -74,8 +78,15 @@ app.use(function(req, res, next){
 
 
 router.get('/', function(req, res){
-    console.log(req.user);
-    res.render('frontpage.pug', {});
+    var sess = req.session;
+    if(sess.views){
+      sess.views++;
+      res.render('frontpage.pug', {'views': sess.views});
+    }
+    else{
+      sess.views=1;
+      res.send("This is the first time you've visited this page!");
+    }
     res.end();
 });
 
@@ -112,6 +123,6 @@ app.use(router);
 
 //------------Starting Server----------//
 
-console.log('Server running at ' + 'http://' + appPrivIP + ':' + PORTNUMBER);
+console.log("SERVER ONLINE");
 //listen to the Nginx proxy server
 app.listen(PORTNUMBER, appPrivIP);

@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.15.1",
+    "connect-redis": "^3.0.2",
     "csurf": "^1.8.3",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
