@@ -86,9 +86,8 @@ router.get('/findBudde$', function(req, res){
 
 router.post('/findBudde/submit$', function(req, res){
   //HTML escape all entities
-  console.log(req.body);
+  //req.body is modified by this function
   helpers.escapeAllStrings(req.body);
-  console.log(req.body);
   res.redirect("/findbudde/submit/success");
 });
 
