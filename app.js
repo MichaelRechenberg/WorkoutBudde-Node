@@ -4,11 +4,31 @@
   */
 
 //Init Express app and Router
+//TODO: Set PORTNUMBER to 443 in production
 var PORTNUMBER = 3000;
 var express = require('express');
 var app = express();
 var router = express.Router();
+var fs = require('fs');
+var https = require('https');
+var http = require('http');
 
+//Have server run on https
+//TODO: Redirect all http requests to https server
+https.createServer({
+  key: fs.readFileSync('private.key'),
+  cert: fs.readFileSync('certificate.pem'),
+}, app).listen(PORTNUMBER);
+
+
+//redirect all http requests to their https equivalent
+//TODO: Change port from 1337 to 80 in production
+var httpApp = express();
+http.createServer(httpApp).listen(1337);
+httpApp.all('*', function(req, res){
+  console.log('http is a no-no');
+  res.redirect(301, 'https://localhost:' + PORTNUMBER + req.path);
+}); 
 
 //-----------------MIDDLEWARE---------------------//
 
@@ -25,11 +45,16 @@ app.set('views', './views');
 app.use(express.static('public'));
 
 //Session Middleware
+//TODO: change store to redis for production
+//TODO: Reinstall cookie-parser if I scrap the sessions
+//req.session
 var session = require('express-session');
 app.use(session({
   secret: 'VblaEgIcr3C2B4qJER3a9iJOSaugMHEjDquvmA4',
   resave: true,
   saveUninitialized: true,
+  httpOnly: true,
+  cookie: {secure: true},
 }));
 
 //Passport for Authentication
@@ -82,4 +107,4 @@ app.use(router);
 //------------Starting Server----------//
 
 console.log("Listening on port " + PORTNUMBER);
-app.listen(PORTNUMBER);
+//app.listen(PORTNUMBER);
