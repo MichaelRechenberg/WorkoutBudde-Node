@@ -14,7 +14,6 @@ var https = require('https');
 var http = require('http');
 
 //Have server run on https
-//TODO: Redirect all http requests to https server
 https.createServer({
   key: fs.readFileSync('private.key'),
   cert: fs.readFileSync('certificate.pem'),
@@ -27,7 +26,8 @@ var httpApp = express();
 http.createServer(httpApp).listen(1337);
 httpApp.all('*', function(req, res){
   console.log('http is a no-no');
-  res.redirect(301, 'https://localhost:' + PORTNUMBER + req.path);
+  
+  res.redirect(301, 'https://' + req.hostname + ':' + PORTNUMBER+ req.url);
 }); 
 
 //-----------------MIDDLEWARE---------------------//
