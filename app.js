@@ -5,7 +5,8 @@
 
 //Init Express app and Router
 //TODO: Set PORTNUMBER to 443 in production
-var PORTNUMBER = 3000;
+var PORTNUMBER = 8080;
+var appPrivIP = '10.136.7.139';
 var express = require('express');
 var app = express();
 var router = express.Router();
@@ -13,22 +14,23 @@ var fs = require('fs');
 var https = require('https');
 var http = require('http');
 
+
 //Have server run on https
-https.createServer({
-  key: fs.readFileSync('private.key'),
-  cert: fs.readFileSync('certificate.pem'),
-}, app).listen(PORTNUMBER);
-
-
-//redirect all http requests to their https equivalent
-//TODO: Change port from 1337 to 80 in production
-var httpApp = express();
-http.createServer(httpApp).listen(1337);
-httpApp.all('*', function(req, res){
-  console.log('http is a no-no');
-  
-  res.redirect(301, 'https://' + req.hostname + ':' + PORTNUMBER+ req.url);
-}); 
+//https.createServer({
+//  key: fs.readFileSync('private.key'),
+//  cert: fs.readFileSync('certificate.pem'),
+//}, app).listen(PORTNUMBER);
+//
+//
+////redirect all http requests to their https equivalent
+////TODO: Change port from 1337 to 80 in production
+//var httpApp = express();
+//http.createServer(httpApp).listen(80);
+//httpApp.all('*', function(req, res){
+//  console.log('http is a no-no');
+//  
+//  res.redirect(301, 'https://' + req.hostname + ':' + PORTNUMBER+ req.url);
+//}); 
 
 //-----------------MIDDLEWARE---------------------//
 
@@ -54,7 +56,8 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   httpOnly: true,
-  cookie: {secure: true},
+  proxy: true,
+  cookie: {secure: false},
 }));
 
 //Passport for Authentication
@@ -70,7 +73,7 @@ app.use(csrf({}));
 //Add CSRF Token to the response on every request
 app.use(function(req, res, next){
     res.locals.csrftoken = req.csrfToken();
-    next();
+    return next();
 });
 
 
@@ -106,5 +109,6 @@ app.use(router);
 
 //------------Starting Server----------//
 
-console.log("Listening on port " + PORTNUMBER);
-//app.listen(PORTNUMBER);
+console.log('Server running at ' + 'http://' + appPrivIP + ':' + PORTNUMBER);
+//listen to the Nginx proxy server
+app.listen(PORTNUMBER, appPrivIP);
