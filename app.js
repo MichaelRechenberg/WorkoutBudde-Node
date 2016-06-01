@@ -3,6 +3,11 @@
   Author: Michael Rechenberg
   */
 
+
+var helpers = require('./helpers.js');
+
+
+
 //Init Express app and Router
 //TODO: Set PORTNUMBER to 443 in production
 var PORTNUMBER = 8080;
@@ -10,27 +15,7 @@ var appPrivIP = '10.136.7.139';
 var express = require('express');
 var app = express();
 var router = express.Router();
-var fs = require('fs');
-var https = require('https');
-var http = require('http');
 
-
-//Have server run on https
-//https.createServer({
-//  key: fs.readFileSync('private.key'),
-//  cert: fs.readFileSync('certificate.pem'),
-//}, app).listen(PORTNUMBER);
-//
-//
-////redirect all http requests to their https equivalent
-////TODO: Change port from 1337 to 80 in production
-//var httpApp = express();
-//http.createServer(httpApp).listen(80);
-//httpApp.all('*', function(req, res){
-//  console.log('http is a no-no');
-//  
-//  res.redirect(301, 'https://' + req.hostname + ':' + PORTNUMBER+ req.url);
-//}); 
 
 //-----------------MIDDLEWARE---------------------//
 
@@ -65,6 +50,9 @@ var passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
 
+//String Validator and Sanitization
+var validator = require('validator');
+
 //CSRF
 //Uses session middleware rather than cookie-parser
 var csrf = require('csurf');
@@ -84,24 +72,28 @@ app.use(function(req, res, next){
 //-----------ROUTING----------------//
 
 
-
 router.get('/', function(req, res){
-    console.log('Front page reached');
-    res.render('frontpage.pug');
+    res.render('frontpage.pug', {});
+    res.end();
 });
 
+
 router.get('/findBudde$', function(req, res){
-    res.render('findbudde.pug', { "csrfToken": res.locals.csrftoken});
+    res.render('findbudde.pug', { 
+        'csrfToken': res.locals.csrftoken,
+    });
 });
 
 router.post('/findBudde/submit$', function(req, res){
+  //HTML escape all entities
+  console.log(req.body);
+  helpers.escapeAllStrings(req.body);
   console.log(req.body);
   res.redirect("/findbudde/submit/success");
 });
 
 router.get('/findBudde/submit/success$', function(req, res){
-    res.render('success.pug');
-    res.end();
+    res.render('success.pug', {});
 });
 
 
