@@ -50,6 +50,7 @@ var passport = require('passport');
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 //String Validator and Sanitization
 var validator = require('validator');
 
@@ -73,6 +74,7 @@ app.use(function(req, res, next){
 
 
 router.get('/', function(req, res){
+    console.log(req.user);
     res.render('frontpage.pug', {});
     res.end();
 });
@@ -94,6 +96,16 @@ router.post('/findBudde/submit$', function(req, res){
 router.get('/findBudde/submit/success$', function(req, res){
     res.render('success.pug', {});
 });
+
+router.get('/login$', function(req, res){
+    if(req.session.auth){
+      res.send("You're already logged in");
+    }
+    else{
+      res.render('login.pug', {'csrfToken': res.locals.csrftoken});
+    }
+});
+
 
 
 app.use(router);

@@ -1,0 +1,4 @@
+h1 Click the button to sign in with Facebook
+form(id="login-form", name="login-form", method="POST", action="/login")
+  input(name="_csrf", type="hidden", value=csrfToken)
+  input(type="submit", value="Sign in with Facebook")

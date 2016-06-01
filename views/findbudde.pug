@@ -11,7 +11,7 @@ html(lang="en")
       .jumbotron
         h1 Enter Info to Find A Budde!
     .container-fluid
-      form(id="budde-form", name="budde-form", method="post", action="/findBudde/submit")
+      form(id="budde-form", name="budde-form", method="POST", action="/findBudde/submit")
         input(class="form-control", type="hidden", name="_csrf", value=csrfToken)
         div(id="personal-info")
           h2 Enter in Your Personal Information
