@@ -2,6 +2,7 @@
   Contains helper methods for WorkoutBudde App
   */
 var validator = require('validator');
+var crypto = require('crypto');
 module.exports = {
   /**
     Escapes All Strings using ValidatorJS
@@ -21,7 +22,36 @@ module.exports = {
       if(typeof input === 'string')
         body[a] = validator.unescape(input);
     }
-  }
+  },
+  //Hash function tutorial found on http://code.ciphertrick.com/2016/01/18/salt-hash-passwords-using-nodejs-crypto/
+  /**
+    Generates salt for hashing
+    Uses hex encoding
+    */
+  generateSalt: function(length){
+    return crypto.randomBytes(Math.ceil(length/2))
+        .toString('hex')
+        .slice(0, length);
+  },
+  /**
+    Hashes password using SHA-512
+    Uses hex encoding
+
+    Params:
+      --salt
+         Random string to add cryptographic salt
+         Will have to be stored in the table to verify user
+      --userPassword 
+        The password the user provides
+
+    */
+    hashPassword: function(salt, userPassword){
+      hashFunc = crypto.createHmac('sha512', salt);
+      //add data to the hash function
+      hashFunc.update(userPassword); 
+      //return hashed data
+      return hashFunc.digest('hex');
+    }
 
 };
 

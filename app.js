@@ -9,12 +9,31 @@ var helpers = require('./helpers.js');
 
 
 //Init Express app and Router
-//TODO: Set PORTNUMBER to 443 in production
 var PORTNUMBER = 8080;
 var appPrivIP = '10.136.7.139'; 
 var express = require('express');
 var app = express();
 var router = express.Router();
+
+//---------------PostGres set up------------------//
+
+//TODO: Decide if I want to use BlueBird for Promise Library
+// for the finally clause
+var pgp = require('pg-promise')({
+    capSQL: true,
+
+});
+var cn = {
+  host: '127.0.0.1', //TODO: make this a new server
+  port: 5432,
+  database: 'workoutbudde',
+  user: 'app',
+  password: 'C6ym1tin'
+};
+
+//Global database object: run queries off of 'db' object
+var db = pgp(cn);
+
 
 
 //-----------------MIDDLEWARE---------------------//
@@ -78,16 +97,7 @@ app.use(function(req, res, next){
 
 
 router.get('/', function(req, res){
-    var sess = req.session;
-    if(sess.views){
-      sess.views++;
-      res.render('frontpage.pug', {'views': sess.views});
-    }
-    else{
-      sess.views=1;
-      res.send("This is the first time you've visited this page!");
-    }
-    res.end();
+  res.render('frontpage.pug');
 });
 
 
@@ -115,6 +125,34 @@ router.get('/login$', function(req, res){
     else{
       res.render('login.pug', {'csrfToken': res.locals.csrftoken});
     }
+});
+
+router.post('/login$', function(req, res){
+  var username = req.body.username;
+  var providedPass = req.body.password;
+  console.log(username);
+  var queryObj = {
+    text: "SELECT salt, password FROM users WHERE username=$1",
+    values: [username]
+  };
+  db.one(queryObj).then(function(data){
+      console.log("Valid username");
+      var salt = data.salt;
+      var hashedProvidedPass = helpers.hashPassword(salt, providedPass);
+      if(hashedProvidedPass == data.password){
+        console.log("Correct login credentials!");
+        req.session.auth = true;
+        res.redirect('/');
+      }
+      else{
+        console.log("Invalid password");
+        res.redirect('/login');
+      }
+      }).catch(function(reason){
+          console.log("Could not find you in our database");
+  });
+
+
 });
 
 
