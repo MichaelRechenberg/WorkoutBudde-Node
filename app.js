@@ -118,12 +118,15 @@ router.get('/findBudde/submit/success$', function(req, res){
     res.render('success.pug', {});
 });
 
-router.get('/login$', function(req, res){
+router.get('/login/', function(req, res){
     if(req.session.auth){
       res.send("You're already logged in");
     }
     else{
-      res.render('login.pug', {'csrfToken': res.locals.csrftoken});
+      res.render('login.pug', {
+          'csrfToken': res.locals.csrftoken,
+          'error': decodeURIComponent(req.query.error),
+      });
     }
 });
 
@@ -145,13 +148,58 @@ router.post('/login$', function(req, res){
         res.redirect('/');
       }
       else{
-        console.log("Invalid password");
-        res.redirect('/login');
+        var error=encodeURIComponent("Invalid Username Or Password");
+        res.redirect('/login/?error=' + error);
       }
       }).catch(function(reason){
-          console.log("Could not find you in our database");
+        var error=encodeURIComponent("Invalid Username Or Password");
+        res.redirect('/login/?error=' + error);
   });
 
+
+});
+
+//Routes for a New User
+//Page for client to add new user
+router.get('/newuser/', function(req, res){
+  var context = {};
+  context.csrfToken = res.locals.csrftoken;
+  var error = req.query.error;
+  if(error != null && error != undefined)
+    context.error = decodeURIComponent(req.query.error);
+  res.render('newuser.pug', context); 
+});
+
+//Process form information from New User Page
+//TODO: Make sure untrusted info is sanitized
+router.post('/newuser/', function(req, res){
+  var queryObj = {
+    text: "SELECT id FROM users WHERE username=$1",
+    values: [req.body.username]
+  };
+  //make sure there are no users with that username 
+  //if the username has not been used before, insert into DB
+  db.none(queryObj).then(function(data){
+        var salt = helpers.generateSalt();
+        req.body.password = helpers.hashPassword(salt, req.body.password);
+        var insertObj = {
+          text: "INSERT INTO users (username, salt, password) VALUES ($1, $2, $3)",
+          values: [req.body.username, salt, req.body.password]
+        };
+        db.none(insertObj).then(function(){
+            //log the person in
+            req.session.auth = true;
+            res.redirect('/');
+          }).catch(function(reason){
+             //TODO: Add this to logger like Winston or Morgan
+             console.log(reason);
+             var error = encodeURIComponent("Error in insertion");
+             res.redirect('/newuser/?error=' + error);
+        });
+    }).catch(function(reason){
+      var error = encodeURIComponent("Username already taken");
+      res.redirect('/newuser/?error=' + error);  
+  });
 
 });
 

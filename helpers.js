@@ -3,6 +3,8 @@
   */
 var validator = require('validator');
 var crypto = require('crypto');
+//how long the salt should be
+var SALT_LENGTH = 20;
 module.exports = {
   /**
     Escapes All Strings using ValidatorJS
@@ -28,10 +30,10 @@ module.exports = {
     Generates salt for hashing
     Uses hex encoding
     */
-  generateSalt: function(length){
-    return crypto.randomBytes(Math.ceil(length/2))
+  generateSalt: function(){
+    return crypto.randomBytes(Math.ceil(SALT_LENGTH/2))
         .toString('hex')
-        .slice(0, length);
+        .slice(0, SALT_LENGTH);
   },
   /**
     Hashes password using SHA-512
