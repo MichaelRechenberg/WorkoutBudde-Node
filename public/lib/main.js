@@ -6,7 +6,8 @@ exercises = [
   "Weight Lifting",
   "Yoga",
   "Cycling (Outdoor)",
-  "Sports",
+  "Indoor Sports",
+  "Outdoor Sports",
 ];
 var loadFunction = function(){
   //load all the exercises
