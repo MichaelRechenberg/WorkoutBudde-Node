@@ -10,6 +10,10 @@ html
         p=error
       form(id="new-user-form", name="new-user-form", method="POST", action="/newuser")
         input(name="_csrf", type="hidden", value=csrfToken)
+        p First Name
+        input(class="form-control", name="username", type="text", required)
+        p Last Name
+        input(class="form-control", name="username", type="text", required)
         p Username
         input(class="form-control", name="username", type="text", required)
         br

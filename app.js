@@ -186,11 +186,12 @@ router.post('/newuser/', function(req, res){
   };
   //make sure there are no users with that username 
   //if the username has not been used before, insert into DB
+  //TODO: Use named parameters for readability
   db.none(queryObj).then(function(data){
         var salt = helpers.generateSalt();
         req.body.password = helpers.hashPassword(salt, req.body.password);
         var insertObj = {
-          text: "INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) VALUES ($1, $2, $3, $4, $5, $6, $7^, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9^, $9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^, $10)",
+          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, zip_code, coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) VALUES ($1, $2, $3, $11, $12, $4, $5, $6, $7^, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9^, $9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^, $10)",
           values: [
             req.body.username,
             salt,
@@ -202,6 +203,8 @@ router.post('/newuser/', function(req, res){
             true,
             "'08:00:00'::time",
             'C',
+            'Manasa',
+            'Bolla',
           ]
 
         };

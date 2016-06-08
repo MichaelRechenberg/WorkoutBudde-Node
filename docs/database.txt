@@ -5,10 +5,12 @@ There are 2 main tables used in WorkoutBudde:
   username VARCHAR(30)
   salt VARCHAR(20) //used for hashing password
   password VARCHAR(128) //hased version, using salt
+  firstname VARCHAR(50)
+  lastname VARCHAR(50)
   street VARCHAR(40)
   city VARCHAR(30)
   zip_code INT 
-  pt //Point containing (latitude, longitude) 
+  coord //Point containing (latitude, longitude) 
   earth_pt //precomupted earth data type used in conjuction with 
            // earthdistance to calculate great-circle distances
   gym_id // If NULL, the user did not indicate a gym. Else, id of a gym in the gyms table
