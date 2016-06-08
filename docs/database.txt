@@ -17,6 +17,7 @@ There are 2 main tables used in WorkoutBudde:
   exer_* // Boolean value indicating if the user likes this activity
   mon, tues, wed, thurs, fri, sat, sun BOOLEAN //indicates if user can workout on this day
   mon_start_time, tues_start_time, mon_end_time, tues_end_time TIME //indicates time when user can workout
+  intensity VARCHAR(1) // 'C' = casual, 'M' = Moderate, 'I' = Intense
 
 2) gyms:
   gym_id SERIAL (Primary Key)

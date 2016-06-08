@@ -196,15 +196,15 @@ router.post('/newuser/', function(req, res){
             req.body.username,
             salt,
             req.body.password,
-            '8213 Kerman street',
-            'Hebron',
-            60034,
+            req.body.street,
+            req.body.city,
+            req.body.zip_code,
             'POINT(45.31221423,-90.54352)',
             true,
             "'08:00:00'::time",
             'C',
-            'Manasa',
-            'Bolla',
+            req.body.firstname,
+            req.body.lastname,
           ]
 
         };
