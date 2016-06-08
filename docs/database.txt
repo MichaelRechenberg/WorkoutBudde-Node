@@ -1,0 +1,25 @@
+There are 2 main tables used in WorkoutBudde:
+
+1) users:
+  user_id (Primary Key)
+  username
+  salt //used for hashing password
+  password //hased version, using salt
+  street
+  city
+  zip_code
+  pt //Point containing (latitude, longitude) 
+  earth_pt //precomupted earth data type used in conjuction with 
+           // earthdistance to calculate great-circle distances
+  gym_id // Foreign Key to gyms table
+  exercises //TODO: FINISH WRITING THIS
+
+2) gyms:
+  gym_id SERIAL (Primary Key)
+  street VARCHAR(50)
+  city VARCHAR(50)
+  zip_code INT
+  pt //Point containing (latitude, longitude) 
+  earth_pt //precomupted earth data type used in conjuction with 
+           // earthdistance to calculate great-circle distances
+    

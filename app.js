@@ -97,7 +97,11 @@ app.use(function(req, res, next){
 
 
 router.get('/', function(req, res){
-  res.render('frontpage.pug');
+  var context = {};
+  //the user is logged in already
+  if(req.session.auth)
+    context.loggedIn = true;
+  res.render('frontpage.pug', context);
 });
 
 
@@ -123,10 +127,12 @@ router.get('/login/', function(req, res){
       res.send("You're already logged in");
     }
     else{
-      res.render('login.pug', {
-          'csrfToken': res.locals.csrftoken,
-          'error': decodeURIComponent(req.query.error),
-      });
+      var context = {};
+      context.csrfToken = res.locals.csrftoken;
+      var error = req.query.error;
+      if(error)
+        context.error = error;
+      res.render('login.pug', context);
     }
 });
 
@@ -165,7 +171,7 @@ router.get('/newuser/', function(req, res){
   var context = {};
   context.csrfToken = res.locals.csrftoken;
   var error = req.query.error;
-  if(error != null && error != undefined)
+  if(error)
     context.error = decodeURIComponent(req.query.error);
   res.render('newuser.pug', context); 
 });

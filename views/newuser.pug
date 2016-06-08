@@ -1,0 +1,22 @@
+html
+  head
+    title Create New WorkoutBudde Profile
+  body
+    .container-fluid
+      h1 Create New WorkoutBudde Profile
+      if error
+        p=error
+      form(id="new-user-form", name="new-user-form", method="POST", action="/newuser")
+        input(name="_csrf", type="hidden", value=csrfToken)
+        p Username:
+        input(name="username", type="text")
+        p Password:
+        input(name="password", type="password")
+        br
+        input(type="submit", value="CREATE NEW USER")
+    //Bootstrap Stylesheet Setup
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    //jQuery library
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+    //Javascript for Bootstrap
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
