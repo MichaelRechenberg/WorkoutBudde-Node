@@ -1,6 +1,8 @@
 html
   head
     title Create New WorkoutBudde Profile
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset="utf-8")
   body
     .container-fluid
       h1 Create New WorkoutBudde Profile
@@ -8,11 +10,39 @@ html
         p=error
       form(id="new-user-form", name="new-user-form", method="POST", action="/newuser")
         input(name="_csrf", type="hidden", value=csrfToken)
-        p Username:
-        input(name="username", type="text")
-        p Password:
-        input(name="password", type="password")
+        p Username
+        input(class="form-control", name="username", type="text", required)
         br
+        p Password
+        input(class="form-control", name="password", type="password", required)
+        br
+        p Street
+        input(class="form-control", name="street", type="text", required)
+        br
+        p City
+        input(class="form-control", name="city", type="text", required)
+        br
+        p Zip Code
+        input(class="form-control", name="zip_code", type="text", pattern="[0-9]+", required)
+        br
+        fieldset(id="exercise-times") 
+          -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
+          each day in days
+            label=day
+              input(class="form-control", name="exercise-time", type="checkbox", value=day)
+            p Start Time (In the form of HH:MM:SS, 24-hour time)
+            input(class="form-control", name="time", placeholder="18:15:00", type="time")
+            p End Time (In the form of HH:MM:SS, 24-hour time)
+            input(class="form-control", name="time", placeholder="18:15:00", type="time")
+        fieldset(id="exercises")
+          -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"]
+          each exercise in exercises
+            label=exercise
+              input(class="form-control", name="exercise", type="checkbox", value=exercise)
+        fieldset(id="intensity")
+          each intensity in ["Casual", "Moderate", "Intense"]
+            label=intensity
+              input(class="form-control", name="intensity", type="radio", required)
         input(type="submit", value="CREATE NEW USER")
     //Bootstrap Stylesheet Setup
     link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")

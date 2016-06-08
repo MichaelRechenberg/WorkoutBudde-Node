@@ -179,6 +179,7 @@ router.get('/newuser/', function(req, res){
 //Process form information from New User Page
 //TODO: Make sure untrusted info is sanitized
 router.post('/newuser/', function(req, res){
+  console.log(req.body);
   var queryObj = {
     text: "SELECT user_id FROM users WHERE username=$1",
     values: [req.body.username]
@@ -189,7 +190,7 @@ router.post('/newuser/', function(req, res){
         var salt = helpers.generateSalt();
         req.body.password = helpers.hashPassword(salt, req.body.password);
         var insertObj = {
-          text: "INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time) VALUES ($1, $2, $3, $4, $5, $6, $7^, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9^, $9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^)",
+          text: "INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) VALUES ($1, $2, $3, $4, $5, $6, $7^, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9^, $9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^, $10)",
           values: [
             req.body.username,
             salt,
@@ -200,6 +201,7 @@ router.post('/newuser/', function(req, res){
             'POINT(45.31221423,-90.54352)',
             true,
             "'08:00:00'::time",
+            'C',
           ]
 
         };

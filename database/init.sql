@@ -29,6 +29,7 @@ CREATE TABLE users(
         exer_swimming BOOLEAN NOT NULL,
         exer_cycling BOOLEAN NOT NULL,
         exer_lifting BOOLEAN NOT NULL,
+        exer_running BOOLEAN NOT NULL,
         exer_yoga BOOLEAN NOT NULL,
         exer_outdoor_sports BOOLEAN NOT NULL,
         exer_indoor_sports BOOLEAN NOT NULL,
@@ -52,12 +53,13 @@ CREATE TABLE users(
         thurs_end_time TIME NOT NULL,
         fri_end_time TIME NOT NULL,
         sat_end_time TIME NOT NULL,
-        sun_end_time TIME NOT NULL
+        sun_end_time TIME NOT NULL,
+        intensity VARCHAR(1) NOT NULL
         );
 
-INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time) 
+INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
     VALUES ('AzureDiamond', 'dota2', 'hunter2', '8617 Kemman Road.', 'Hebron', 60034, POINT(40.12432, -86.432234), 
-         False, False, True, False, True, True, False, False, False, True, True, True, False,
+         False, False, True, False, True, True, False, False, False, True, True, True, True, False,
          '08:00:00'::time,
          '08:00:00'::time,
          '08:00:00'::time,
@@ -71,7 +73,8 @@ INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_sw
          '08:00:00'::time,
          '08:00:00'::time,
          '08:00:00'::time,
-         '08:00:00'::time
+         '08:00:00'::time,
+         'C'
          );
 DROP TABLE IF EXISTS test;
 CREATE TABLE test(
