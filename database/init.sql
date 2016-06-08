@@ -55,8 +55,9 @@ CREATE TABLE users(
         sun_end_time TIME NOT NULL
         );
 
-INSERT INTO users VALUES (1, 'AzureDiamond', 'dota2', 'hunter2', '8617 Kemman Road.', 'Hebron', 60034, NULL, POINT(40.12432, -86.432234), 
-        NULL, False, False, True, False, True, True, False, False, False, True, True, True, False,
+INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time) 
+    VALUES ('AzureDiamond', 'dota2', 'hunter2', '8617 Kemman Road.', 'Hebron', 60034, POINT(40.12432, -86.432234), 
+         False, False, True, False, True, True, False, False, False, True, True, True, False,
          '08:00:00'::time,
          '08:00:00'::time,
          '08:00:00'::time,
@@ -72,3 +73,13 @@ INSERT INTO users VALUES (1, 'AzureDiamond', 'dota2', 'hunter2', '8617 Kemman Ro
          '08:00:00'::time,
          '08:00:00'::time
          );
+DROP TABLE IF EXISTS test;
+CREATE TABLE test(
+        derp POINT NOT NULL
+        );
+GRANT ALL PRIVILEGES ON users TO app;
+GRANT ALL PRIVILEGES ON users_user_id_seq TO app;
+GRANT ALL PRIVILEGES ON gyms TO app;
+GRANT ALL PRIVILEGES ON gyms_id_seq TO app;
+GRANT ALL PRIVILEGES ON test TO app;
+

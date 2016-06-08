@@ -180,7 +180,7 @@ router.get('/newuser/', function(req, res){
 //TODO: Make sure untrusted info is sanitized
 router.post('/newuser/', function(req, res){
   var queryObj = {
-    text: "SELECT id FROM users WHERE username=$1",
+    text: "SELECT user_id FROM users WHERE username=$1",
     values: [req.body.username]
   };
   //make sure there are no users with that username 
@@ -189,11 +189,26 @@ router.post('/newuser/', function(req, res){
         var salt = helpers.generateSalt();
         req.body.password = helpers.hashPassword(salt, req.body.password);
         var insertObj = {
-          text: "INSERT INTO users (username, salt, password) VALUES ($1, $2, $3)",
-          values: [req.body.username, salt, req.body.password]
+          text: "INSERT INTO users (username, salt, password, street, city, zip_code, pt, exer_swimming, exer_cycling, exer_lifting, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time) VALUES ($1, $2, $3, $4, $5, $6, $7^, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9^, $9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^)",
+          values: [
+            req.body.username,
+            salt,
+            req.body.password,
+            '8213 Kerman street',
+            'Hebron',
+            60034,
+            'POINT(45.31221423,-90.54352)',
+            true,
+            "'08:00:00'::time",
+          ]
+
         };
-        db.none(insertObj).then(function(){
+        var a = "";
+        a = pgp.as.format(insertObj.text, insertObj.values);
+        console.log(a);
+        db.none(a).then(function(){
             //log the person in
+            console.log("sucess?");
             req.session.auth = true;
             res.redirect('/');
           }).catch(function(reason){
@@ -203,6 +218,7 @@ router.post('/newuser/', function(req, res){
              res.redirect('/newuser/?error=' + error);
         });
     }).catch(function(reason){
+      console.log(reason);
       var error = encodeURIComponent("Username already taken");
       res.redirect('/newuser/?error=' + error);  
   });
