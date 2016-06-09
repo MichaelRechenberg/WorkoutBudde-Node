@@ -165,6 +165,13 @@ router.post('/login$', function(req, res){
 
 });
 
+router.get('/logout/', function(req, res){
+   if(req.session.auth){
+    req.session.auth=false;
+   }
+   res.redirect('/');
+});
+
 //Routes for a New User
 //Page for client to add new user
 router.get('/newuser/', function(req, res){
@@ -187,26 +194,82 @@ router.post('/newuser/', function(req, res){
   //make sure there are no users with that username 
   //if the username has not been used before, insert into DB
   //TODO: Use named parameters for readability
+  //In exercise-times, 0-Sun, 1-Mon,...6-Sat
+  //handle dates 
   db.none(queryObj).then(function(data){
+        var values={};
+        values.username = req.body.username;
         var salt = helpers.generateSalt();
+        values.salt = salt;
         req.body.password = helpers.hashPassword(salt, req.body.password);
-        var insertObj = {
-          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, zip_code, coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) VALUES ($1, $2, $3, $11, $12, $4, $5, $6, $7^, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9^, $9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^,$9^, $10)",
-          values: [
-            req.body.username,
-            salt,
-            req.body.password,
-            req.body.street,
-            req.body.city,
-            req.body.zip_code,
-            'POINT(45.31221423,-90.54352)',
-            true,
-            "'08:00:00'::time",
-            'C',
-            req.body.firstname,
-            req.body.lastname,
-          ]
+        values.password = req.body.password;
+        values.firstname = req.body.firstname;
+        values.lastname = req.body.lastname;
+        values.street = req.body.street;
+        values.city = req.body.city;
+        values.zip_code = req.body.zip_code;
+        //TODO: Google Geolocation
+        values.coord = 'POINT(45.31221423,-90.54352)';
+        values.swimming = false;
+        values.cycling = false;
+        values.lifting = false;
+        values.running = false;
+        values.yoga = false;
+        values.outdoor_sports = false;
+        values.indoor_sports = false;
+        req.body.exercise.forEach((val)=>{
+          switch(val){
+            case 'Swimming':
+              values.swimming=true;
+              break;
+            case 'Cycling':
+              values.cycling=true;
+              break;
+            case 'Running':
+              values.running=true;
+              break;
+            case 'Lifting':
+              values.lifting=true;
+              break;
+            case 'Yoga':
+              values.yoga=true;
+              break;
+            case 'Outdoor Sports':
+              values.outdoor_sports=true;
+              break;
+            case 'Indoor Sports':
+              values.indoor_sports=true;
+              break;
+            default:
+              break;
+          }
+        });
+        values.sun = false;
+        values.sun_start_time = '08:00:00';
+        values.sun_end_time = '08:00:00';
+        values.mon = false;
+        values.mon_start_time = '08:00:00';
+        values.mon_end_time = '08:00:00';
+        values.tues = false;
+        values.tues_start_time = '08:00:00';
+        values.tues_end_time = '08:00:00';
+        values.wed = false;
+        values.wed_start_time = '08:00:00';
+        values.wed_end_time = '08:00:00';
+        values.thurs = false;
+        values.thurs_start_time = '08:00:00';
+        values.thurs_end_time = '08:00:00';
+        values.fri = false;
+        values.fri_start_time = '08:00:00';
+        values.fri_end_time = '08:00:00';
+        values.sat = false;
+        values.sat_start_time = '08:00:00';
+        values.sat_end_time = '08:00:00';
+        values.intensity = 'C';
 
+        var insertObj = {
+          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, zip_code, coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<zip_code>, $<coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>)",
+          values: values 
         };
         var a = "";
         a = pgp.as.format(insertObj.text, insertObj.values);

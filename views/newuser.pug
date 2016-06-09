@@ -31,9 +31,9 @@ html
         br
         fieldset(id="exercise-times") 
           -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
-          each day in days
+          each day, index in days
             label=day
-              input(class="form-control", name="exercise-time", type="checkbox", value=day)
+              input(class="form-control", name="exercise-time", type="checkbox", value=index)
             p Start Time (In the form of HH:MM:SS, 24-hour time)
             input(class="form-control", name="time", placeholder="18:15:00", type="time")
             p End Time (In the form of HH:MM:SS, 24-hour time)

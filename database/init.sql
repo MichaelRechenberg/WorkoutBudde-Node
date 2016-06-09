@@ -80,7 +80,8 @@ INSERT INTO users (username, salt, password, firstname, lastname, street, city, 
          );
 DROP TABLE IF EXISTS test;
 CREATE TABLE test(
-        derp POINT NOT NULL
+        derp POINT NOT NULL,
+        asdf TIME NOT NULL
         );
 GRANT ALL PRIVILEGES ON users TO app;
 GRANT ALL PRIVILEGES ON users_user_id_seq TO app;
