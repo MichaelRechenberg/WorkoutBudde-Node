@@ -48,7 +48,7 @@ var pug = require('pug');
 app.set('views', './views');
 
 //Serve static files from public directory, located in root directory
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 //Session Middleware
 //req.session
