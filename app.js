@@ -217,6 +217,12 @@ router.post('/newuser/', function(req, res){
         values.yoga = false;
         values.outdoor_sports = false;
         values.indoor_sports = false;
+        //ensure req.body.exercise is an array
+        if(typeof req.body.exercise == 'string'){
+            var temp = req.body.exercise;
+            req.body.exercise = [];
+            req.body.exercise.push(temp);
+        }
         req.body.exercise.forEach((val)=>{
           switch(val){
             case 'Swimming':
@@ -244,28 +250,127 @@ router.post('/newuser/', function(req, res){
               break;
           }
         });
+        //TODO: Handle times how we want
+        //If the value was checked on:
+        //  If both time are empty, the user meant all day
+        //    set start_time to 00:00:00 and end time to 23:59:59 
+        //  If only one time is empty, throw error
+        //  If both times are non-empty, check to see if start_time < end_time
+        //    if not, throw an error back to user
+        //    if so, add times accordingly
+        //If the value was not checked:
+        //  Set both times to NULL
+        //  
         values.sun = false;
-        values.sun_start_time = '08:00:00';
-        values.sun_end_time = '08:00:00';
+        values.sun_start_time = '00:00:00';
+        values.sun_end_time = '23:59:59';
         values.mon = false;
-        values.mon_start_time = '08:00:00';
-        values.mon_end_time = '08:00:00';
+        values.mon_start_time = '00:00:00';
+        values.mon_end_time = '23:59:59';
         values.tues = false;
-        values.tues_start_time = '08:00:00';
-        values.tues_end_time = '08:00:00';
+        values.tues_start_time = '00:00:00';
+        values.tues_end_time = '23:59:59';
         values.wed = false;
-        values.wed_start_time = '08:00:00';
-        values.wed_end_time = '08:00:00';
+        values.wed_start_time = '00:00:00';
+        values.wed_end_time = '23:59:59';
         values.thurs = false;
-        values.thurs_start_time = '08:00:00';
-        values.thurs_end_time = '08:00:00';
+        values.thurs_start_time = '00:00:00';
+        values.thurs_end_time = '23:59:59';
         values.fri = false;
-        values.fri_start_time = '08:00:00';
-        values.fri_end_time = '08:00:00';
+        values.fri_start_time = '00:00:00';
+        values.fri_end_time = '23:59:59';
         values.sat = false;
-        values.sat_start_time = '08:00:00';
-        values.sat_end_time = '08:00:00';
-        values.intensity = 'C';
+        values.sat_start_time = '00:00:00';
+        values.sat_end_time = '23:59:59';
+        values.intensity = req.body.intensity;
+        //make sure exercise-time is an array before iterating
+        if(typeof req.body["exercise-time"] == 'string'){
+          var temp = req.body["exercise-time"];
+          req.body["exercise-time"] = [];
+          req.body["exercise-time"].push(temp);
+        }
+        req.body["exercise-time"].forEach((val)=>{
+          var start = 2*val;
+          var end = 2*val + 1;
+          if(val == 0){
+            values.sun = true;
+            values.sun_start_time = req.body.time[start];
+            values.sun_end_time = req.body.time[end];
+          }
+          else if(val == 1){
+            values.mon = true;
+            values.mon_start_time = req.body.time[start];
+            values.mon_end_time = req.body.time[end];
+          }
+          else if(val == 2){
+            values.tues = true;
+            values.tues_start_time = req.body.time[start];
+            values.tues_end_time = req.body.time[end];
+          }
+          else if(val == 3){
+            values.wed = true;
+            values.wed_start_time = req.body.time[start];
+            values.wed_end_time = req.body.time[end];
+          }
+          else if(val == 4){
+            values.thurs = true;
+            values.thurs_start_time = req.body.time[start];
+            values.thurs_end_time = req.body.time[end];
+          }
+          else if(val == 5){
+            values.fri = true;
+            values.fri_start_time = req.body.time[start];
+            values.fri_end_time = req.body.time[end];
+          }
+          else if(val == 6){
+            values.sat = true;
+            values.sat_start_time = req.body.time[start];
+            values.sat_end_time = req.body.time[end];
+          }
+          
+        });
+        //if the user requested a full day, modify start/end times to
+        //  reflect that: start = '00:00:00' and end = '23:59:59'
+        //ensure req.body.fullDay is an array before calling forEach
+        //if(typeof req.body["fullDay"] == 'string'){
+        //  var temp = req.body["fullDay"];
+        //  req.body["fullDay"] = [];
+        //  req.body["fullDay"].push(temp);
+        //}
+        //req.body["fullDay"].forEach((val)=>{
+        //  if(val == 0){
+        //    values.sun_start_time = '00:00:00';
+        //    values.sun_end_time = '23:59:59';
+        //  }
+        //  else if(val == 1){
+        //    values.mon_start_time = '00:00:00';
+        //    values.mon_end_time = '23:59:59';
+        //  }
+        //  else if(val == 2){
+        //    values.tues_start_time = '00:00:00';
+        //    values.tues_end_time = '23:59:59';
+        //  }
+        //  else if(val == 3){
+        //    values.wed_start_time = '00:00:00';
+        //    values.wed_end_time = '23:59:59';
+        //  }
+        //  else if(val == 4){
+        //    values.thurs_start_time = '00:00:00';
+        //    values.thurs_end_time = '23:59:59';
+        //  }
+        //  else if(val == 5){
+        //    values.fri_start_time = '00:00:00';
+        //    values.fri_end_time = '23:59:59';
+        //  }
+        //  else if(val == 6){
+        //    values.sat_start_time = '00:00:00';
+        //    values.sat_end_time = '23:59:59';
+        //  }
+        //  
+        //});
+
+
+
 
         var insertObj = {
           text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, zip_code, coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<zip_code>, $<coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>)",

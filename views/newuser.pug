@@ -3,41 +3,48 @@ html
     title Create New WorkoutBudde Profile
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(charset="utf-8")
+    link(rel="stylesheet", href="css/style.css", type="text/css")
   body
     .container-fluid
       h1 Create New WorkoutBudde Profile
       if error
         p=error
-      form(id="new-user-form", name="new-user-form", method="POST", action="/newuser")
+      form(id="new-user-form", name="new-user-form", method="POST", action="/newuser", onsubmit="return validateForm()")
         input(name="_csrf", type="hidden", value=csrfToken)
         p First Name
-        input(class="form-control", name="firstname", type="text", required)
+        input(id="firstname", class="form-control", name="firstname", type="text", required)
         p Last Name
-        input(class="form-control", name="lastname", type="text", required)
+        input(id="lastname", class="form-control", name="lastname", type="text", required)
         p Username
-        input(class="form-control", name="username", type="text", required)
+        input(id="username", class="form-control", name="username", type="text", required)
         br
         p Password
-        input(class="form-control", name="password", type="password", required)
+        input(id="password", class="form-control", name="password", type="password", required)
+        p Re-enter Password
+        input(id="passwordCheck", class="form-control", name="retyped_password", type="password", required)
         br
         p Street
-        input(class="form-control", name="street", type="text", required)
+        input(id="street", class="form-control", name="street", type="text", required)
         br
         p City
-        input(class="form-control", name="city", type="text", required)
+        input(id="city", class="form-control", name="city", type="text", required)
         br
         p Zip Code
-        input(class="form-control", name="zip_code", type="text", pattern="[0-9]+", required)
+        input(id="zip_code", class="form-control", name="zip_code", type="text", pattern="[0-9]+", required)
         br
         fieldset(id="exercise-times") 
           -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
           each day, index in days
+           div(class="time_box")
             label=day
-              input(class="form-control", name="exercise-time", type="checkbox", value=index)
-            p Start Time (In the form of HH:MM:SS, 24-hour time)
-            input(class="form-control", name="time", placeholder="18:15:00", type="time")
-            p End Time (In the form of HH:MM:SS, 24-hour time)
-            input(class="form-control", name="time", placeholder="18:15:00", type="time")
+              input(class="form-control chooseDay", name="exercise-time", type="checkbox", value=index)
+            p Start Time (In the form of HH:MM, 24-hour time (00:00-23:59))
+            input(class="form-control time_input", name="time", placeholder="15:00", type="time", pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]")
+            p End Time (In the form of HH:MM, 24-hour time (00:00-23:59))
+            input(class="form-control time_input", name="time", placeholder="18:15", type="time")
+            label Full-Day (Click this if you are free the whole day)
+              input(class="fullDay", name="fullDay", type="checkbox", value=index)
+            br
         fieldset(id="exercises")
           -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"]
           each exercise in exercises
@@ -48,9 +55,11 @@ html
             label=intensity
               input(class="form-control", name="intensity", type="radio", value=intensity[0], required)
         input(type="submit", value="CREATE NEW USER")
+      div(id="validationError")
+    //jQuery library for Bootstrap
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
     //Bootstrap Stylesheet Setup
     link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
-    //jQuery library
-    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
     //Javascript for Bootstrap
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+    script(src="lib/validateNewUser.js")
