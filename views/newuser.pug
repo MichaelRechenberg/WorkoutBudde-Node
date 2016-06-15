@@ -10,6 +10,8 @@ html
       if error
         p=error
       form(id="new-user-form", name="new-user-form", method="POST", action="/newuser", onsubmit="return validateForm()")
+        input(id="latitude", name="latitude", type="hidden")
+        input(id="longitude", name="longitude", type="hidden")
         input(name="_csrf", type="hidden", value=csrfToken)
         p First Name
         input(id="firstname", class="form-control", name="firstname", type="text", required)
@@ -24,13 +26,17 @@ html
         input(id="passwordCheck", class="form-control", name="retyped_password", type="password", required)
         br
         p Street
-        input(id="street", class="form-control", name="street", type="text", required)
+        input(id="street", class="form-control", name="street", type="text", onchange="geocodeAddress()", required)
         br
         p City
-        input(id="city", class="form-control", name="city", type="text", required)
+        input(id="city", class="form-control", name="city", type="text", onchange="geocodeAddress()", required)
+        p State <strong>Need to Add to DB and app.js, options drop down</strong>
+        input(id="state", class="form-control", name="state", type="text", onchange="geocodeAddress()", required)
         br
         p Zip Code
-        input(id="zip_code", class="form-control", name="zip_code", type="text", pattern="[0-9]+", required)
+        input(id="zip_code", class="form-control", name="zip_code", type="text", pattern="[0-9]+", onchange="geocodeAddress()", required)
+        div(id="geocodePrompt")
+          div(class="alert alert-info") Enter Address Information To See If Address Is Valid
         br
         fieldset(id="exercise-times") 
           -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
@@ -54,7 +60,7 @@ html
           each intensity in ["Casual", "Moderate", "Intense"]
             label=intensity
               input(class="form-control", name="intensity", type="radio", value=intensity[0], required)
-        input(type="submit", value="CREATE NEW USER")
+        input(id="submit", type="submit", value="CREATE NEW USER")
       div(id="validationError")
     //jQuery library for Bootstrap
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
@@ -63,3 +69,4 @@ html
     //Javascript for Bootstrap
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
     script(src="/lib/validateNewUser.js")
+    script(src="/lib/geocode.js")

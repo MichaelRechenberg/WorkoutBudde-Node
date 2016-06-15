@@ -1,3 +1,5 @@
+var VALID_LOCATION = false;
+
 function validateForm(){
     var firstname = document.getElementById("firstname");
     var lastname = document.getElementById("lastname");
@@ -78,14 +80,23 @@ function validateForm(){
         valid = false;
       }
     })(daySelected);
-     
+
+    //focus user to last error (not working rn) 
     $(document).ready(()=>{
       if(lasterr != null){
         lasterr.focus();
       }
     });
-    return valid;
+    if(VALID_LOCATION){
+        return valid;
+    }
+    else{
+        validationError.appendChild(genError('Invalid Address'));
+        return false;
+    }
 }
+
+
 
 /**
   Helper function to generate Error div
@@ -96,3 +107,4 @@ function genError(msg){
    error.innerHTML = msg;
    return error;
 }
+

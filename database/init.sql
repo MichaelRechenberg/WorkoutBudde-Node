@@ -24,6 +24,7 @@ CREATE TABLE users(
         lastname VARCHAR(50) NOT NULL,
         street VARCHAR(40) NOT NULL,
         city VARCHAR(30) NOT NULL,
+        state VARCHAR(30) NOT NULL,
         zip_code INT NOT NULL,
         gym_id INT,
         coord POINT NOT NULL,
@@ -59,10 +60,10 @@ CREATE TABLE users(
         intensity VARCHAR(1) NOT NULL
         );
 
-INSERT INTO users (username, salt, password, firstname, lastname, street, city, zip_code, coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
+INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
     VALUES ('AzureDiamond', '7a365de276c45ad70d16', 
             '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169',
-            'Michael', 'Rechenberg', '8617 Kemman Road.', 'Hebron', 
+            'Michael', 'Rechenberg', '8617 Kemman Road.', 'Hebron', 'IL',
             60034, POINT(40.12432, -86.432234), 
          False, False, True, False, True, True, False, False, False, True, True, True, True, False,
          '08:00'::time,
