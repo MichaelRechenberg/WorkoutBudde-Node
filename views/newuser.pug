@@ -60,8 +60,8 @@ html
           each intensity in ["Casual", "Moderate", "Intense"]
             label=intensity
               input(class="form-control", name="intensity", type="radio", value=intensity[0], required)
+        div(id="validationError")
         input(id="submit", type="submit", value="CREATE NEW USER")
-      div(id="validationError")
     //jQuery library for Bootstrap
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
     //Bootstrap Stylesheet Setup

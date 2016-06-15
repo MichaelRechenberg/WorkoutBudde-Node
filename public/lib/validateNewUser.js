@@ -12,7 +12,6 @@ function validateForm(){
     var times = document.getElementById("exercise-times");
     var validationError = document.getElementById("validationError");
     //reference to the DOM Node of the last error generated
-    var lasterr = null;
     //clear away any validation messages
     while(validationError.firstChild){
         validationError.removeChild(validationError.firstChild);
@@ -25,7 +24,6 @@ function validateForm(){
         var error = genError('Passwords do not match');
         validationError.appendChild(error);
         valid = false;
-        lasterr = error;
     }
     
     //boolean flag seeing if at least one day was selected
@@ -55,7 +53,6 @@ function validateForm(){
               var error = genError("A time is empty for day " + ++i);
               validationError.appendChild(error);
               valid = false;
-              lasterr = error;
           }
           //Both of the times are filled in, check to make sure the start time is before the end time
           else{
@@ -76,17 +73,11 @@ function validateForm(){
       if(!asdf){
         var error = genError('You must choose at least one day');
         validationError.appendChild(error);
-        lasterr = error;
         valid = false;
       }
     })(daySelected);
 
-    //focus user to last error (not working rn) 
-    $(document).ready(()=>{
-      if(lasterr != null){
-        lasterr.focus();
-      }
-    });
+    location.hash = '#validationError';
     if(VALID_LOCATION){
         return valid;
     }
