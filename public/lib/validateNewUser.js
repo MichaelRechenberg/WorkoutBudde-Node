@@ -78,6 +78,8 @@ function validateForm(){
     })(daySelected);
 
     location.hash = '#validationError';
+
+    //VALID_LOCATION is set by geocode.js
     if(VALID_LOCATION){
         return valid;
     }

@@ -63,8 +63,10 @@ CREATE TABLE users(
 /**
   The following INSERT's create dummy users to test queries on 
   They all have the same login, but different exercises, location, etc
-  Do a y9 on each one to yank it
+  Do a y10y on each one to yank it
   */
+
+--Michael Rechenberg: 8617 Kemman Road
 INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
     VALUES ('AzureDiamond', '7a365de276c45ad70d16', 
             '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169',
@@ -83,6 +85,39 @@ INSERT INTO users (username, salt, password, firstname, lastname, street, city, 
             'Cody', 'Nelson', '13376 Route 173', 'Hebron', 'IL', 60034, 
          POINT(42.464775, -88.457035), 
          ll_to_earth(42.464775, -88.457035),
+         False, False, True, False, True, True, False, False, False, True, True, True, True, False,
+         '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time,
+         'C'
+         );
+--Lives at the Dari
+INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
+    VALUES ('SkaterKid', '7a365de276c45ad70d16', 
+            '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169',
+            'John', 'Doe', '10011 Main St', 'Hebron', 'IL', 60034, 
+         POINT(42.471170, -88.432755), 
+         ll_to_earth(42.471170, -88.432755),
+         False, False, True, False, True, True, False, False, False, True, True, True, True, False,
+         '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time,
+         'C'
+         );
+--Lives at Marian Central
+INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
+    VALUES ('PraiseBe', '7a365de276c45ad70d16', 
+            '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169',
+            'Jesus', 'Christ', '1001 McHenry Ave', 'Woodstock', 'IL', 60098, 
+         POINT(42.326123, -88.431081), 
+         ll_to_earth(42.326123, -88.431081),
+         False, False, True, False, True, True, False, False, False, True, True, True, True, False,
+         '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time,
+         'C'
+         );
+--Lives (Woodstock)
+INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) 
+    VALUES ('SgtKilljoy', '7a365de276c45ad70d16', 
+            '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169',
+            'Alexis', 'Izzy', '708 Carlisle Dr', 'Woodstock', 'IL', 60098, 
+         POINT(42.329630, -88.456769), 
+         ll_to_earth(42.32630, -88.456769),
          False, False, True, False, True, True, False, False, False, True, True, True, True, False,
          '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time,
          'C'

@@ -1,0 +1,71 @@
+doctype html
+html(lang="en")
+  head
+    title Find a Budde
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset="utf-8")
+    
+  
+  body
+    .container-fluid
+      .jumbotron
+        h1 Enter Info to Find A Budde!
+    .container-fluid
+      form(id="budde-form", name="budde-form", method="POST", action="/findBudde/submit")
+        input(class="form-control", type="hidden", name="_csrf", value=csrfToken)
+        div(id="personal-info")
+          h2 Enter in Your Personal Information
+          |First Name
+          input(class="form-control", name="firstName", type="text", placeholder="John", pattern="[A-Za-z\-]+", required)
+          br
+          |Last Name
+          input(class="form-control", name="lastName", type="text", placeholder="Doe", pattern="[A-Za-z\-]+", required) 
+          br
+          Street Address
+          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z. \-]+", required) 
+          br
+          |City/Town
+          input(class="form-control", name="city", type="text", placeholder="Swoleville", pattern="[A-Za-z\- ]+", required) 
+          br
+          |Zip Code
+          input(class="form-control", name="areaCode", type="text", pattern="[0-9]{5}", required) 
+          br
+        div(id="workout-location-info")
+          h2 Enter In The Information Of Where You Workout
+            h3 If you workout location is not fixed (i.e. outside, not a gym), leave this information blank
+          |Gym/Location Name
+          input(class="form-control", name="location-name", type="text")
+          br
+          |Street Address
+          input(class="form-control", name="location-address", type="text", pattern="[0-9]+ [A-Za-z. \-]+") 
+          br
+          |City/Town
+          input(class="form-control", name="location-city", type="text", pattern="[A-Za-z \-]+") 
+          br
+
+        div(id="exercise-info") 
+          //TODO: Add exercise frequency (M,W,T,R...and a time range)
+          //filled out by main.js 
+          div(id="exercises") 
+            p Check The Exercises You Enjoy
+          //Need to enforce that at least one of these options is selected
+          div(id="intensityOption")
+            p How Intense Do You Workout?
+            label Casual
+              input(class="form-control", name="intensity", type="radio", value="Casual", required) 
+            label Moderate
+              input(class="form-control", name="intensity", type="radio", value="Moderate", required) 
+            label Intense
+              input(class="form-control", name="intensity", type="radio", value="Intense", required) 
+          p Type Any Exerices That You Do But Aren't Listed Above Here
+          textarea(class="form-control", name="exerciseBrief", form="budde-form")
+          br
+        input(type="submit", value="Find a Budde!")
+
+    //jQuery library
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+    //Bootstrap Stylesheet Setup
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    //Javascript for Bootstrap
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+    script(src="lib/main.js")

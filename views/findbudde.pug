@@ -1,71 +1,48 @@
-doctype html
-html(lang="en")
+html
   head
-    title Find a Budde
+    title Find A Budde
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
     meta(charset="utf-8")
-    
-  
+    link(rel="stylesheet", href="/css/style.css", type="text/css")
   body
     .container-fluid
-      .jumbotron
-        h1 Enter Info to Find A Budde!
-    .container-fluid
-      form(id="budde-form", name="budde-form", method="POST", action="/findBudde/submit")
-        input(class="form-control", type="hidden", name="_csrf", value=csrfToken)
-        div(id="personal-info")
-          h2 Enter in Your Personal Information
-          |First Name
-          input(class="form-control", name="firstName", type="text", placeholder="John", pattern="[A-Za-z\-]+", required)
-          br
-          |Last Name
-          input(class="form-control", name="lastName", type="text", placeholder="Doe", pattern="[A-Za-z\-]+", required) 
-          br
-          Street Address
-          input(class="form-control", name="streetAddress", type="text", placeholder="6209 Fit Lane", pattern="[0-9]+ [A-Za-z. \-]+", required) 
-          br
-          |City/Town
-          input(class="form-control", name="city", type="text", placeholder="Swoleville", pattern="[A-Za-z\- ]+", required) 
-          br
-          |Zip Code
-          input(class="form-control", name="areaCode", type="text", pattern="[0-9]{5}", required) 
-          br
-        div(id="workout-location-info")
-          h2 Enter In The Information Of Where You Workout
-            h3 If you workout location is not fixed (i.e. outside, not a gym), leave this information blank
-          |Gym/Location Name
-          input(class="form-control", name="location-name", type="text")
-          br
-          |Street Address
-          input(class="form-control", name="location-address", type="text", pattern="[0-9]+ [A-Za-z. \-]+") 
-          br
-          |City/Town
-          input(class="form-control", name="location-city", type="text", pattern="[A-Za-z \-]+") 
-          br
-
-        div(id="exercise-info") 
-          //TODO: Add exercise frequency (M,W,T,R...and a time range)
-          //filled out by main.js 
-          div(id="exercises") 
-            p Check The Exercises You Enjoy
-          //Need to enforce that at least one of these options is selected
-          div(id="intensityOption")
-            p How Intense Do You Workout?
-            label Casual
-              input(class="form-control", name="intensity", type="radio", value="Casual", required) 
-            label Moderate
-              input(class="form-control", name="intensity", type="radio", value="Moderate", required) 
-            label Intense
-              input(class="form-control", name="intensity", type="radio", value="Intense", required) 
-          p Type Any Exerices That You Do But Aren't Listed Above Here
-          textarea(class="form-control", name="exerciseBrief", form="budde-form")
-          br
-        input(type="submit", value="Find a Budde!")
-
-    //jQuery library
-    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js")
+      h1 Enter In Your Location To Find A Budde Near You!
+      if error
+        p=error
+      form(id="find-budde-form", name="find-budde-form", method="POST", action="/findBudde/submit", onsubmit="return validateForm()")
+        input(id="latitude", name="latitude", type="hidden")
+        input(id="longitude", name="longitude", type="hidden")
+        input(name="_csrf", type="hidden", value=csrfToken)
+        p Street
+        input(id="street", class="form-control", name="street", type="text", onchange="geocodeAddress()", required)
+        br
+        p City
+        input(id="city", class="form-control", name="city", type="text", onchange="geocodeAddress()", required)
+        p State 
+        input(id="state", class="form-control", name="state", type="text", onchange="geocodeAddress()", required)
+        br
+        p Zip Code
+        input(id="zip_code", class="form-control", name="zip_code", type="text", pattern="[0-9]+", onchange="geocodeAddress()", required)
+        div(id="geocodePrompt")
+          div(class="alert alert-info") Enter Address Information To See If Address Is Valid
+        p Within What Kilometer Range?
+        select
+          option(value="5") 5 
+          option(value="10") 10
+          option(value="15") 15
+          option(value="20") 20
+          option(value="25") 25
+          option(value="30") 30
+          option(value="50") 50
+          option(value="75") 75
+        div(id="validationError")
+        br
+        input(id="submit", type="submit", value="Find A Budde!")
+    //jQuery library for Bootstrap
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
     //Bootstrap Stylesheet Setup
     link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
     //Javascript for Bootstrap
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
-    script(src="lib/main.js")
+    script(src="/lib/validateFindBudde.js")
+    script(src="/lib/geocode.js")
