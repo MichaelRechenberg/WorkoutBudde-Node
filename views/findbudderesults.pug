@@ -2,10 +2,13 @@ html
   head
     title Success
   body
-    h1 Thank you for your submission! 
-    ol
+    h1 Buddes Near You
+    ul
       each user in results
-        li=user.username
-        p=user.firstname
-        p=user.lastname
+        li
+          a(href="/profile/"+user.user_id) #{user.firstname} #{user.lastname}
+        if user.distance == 0
+          p  Less than 1 km away
+        else 
+          p #{user.distance} km away 
 

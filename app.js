@@ -151,20 +151,22 @@ router.get('/findBudde/submit/results', function(req, res){
     values.push(req.query.lng);
     values.push(req.query.range*1000);
     var queryObj = {
-      text: "SELECT firstname, lastname, username FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3",
+      text: "SELECT user_id, firstname, lastname, distance FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3 ORDER BY distance",
       values: values
     }
     //data is an array containing rows of objects where the object properties
     //  are the columns designated in the query
     //If no rows are returned, then data is an empty array
     db.any(queryObj).then((data)=>{
-        data.forEach((val)=>{
-           console.log(val.username);
-        }); 
+        data.forEach(function(val, index, data){
+          data[index].distance = Math.floor(data[index].distance/1000);
+          
+        });
         res.render('findbudderesults.pug', {results: data});
       })
       .catch((reason)=>{
         console.log("Error in findbudde/submit/results");
+        console.log(reason);
         res.status(500).send("Error In Query");
     });
   }
