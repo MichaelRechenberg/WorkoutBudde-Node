@@ -12,13 +12,17 @@ function validateForm(){
     while(validationError.firstChild){
         validationError.removeChild(validationError.firstChild);
     }
-    location.hash = '#validationError';
+    //Place user's selection for range into hidden range input element
+    var range = document.getElementById('select_range');
+    document.getElementById('input_range').value = range.options[range.selectedIndex].value;
+
     //VALID_LOCATION is set by geocode.js
     if(VALID_LOCATION){
         return true;
     }
     else{
         validationError.appendChild(genError('Invalid Address'));
+        location.hash = '#validationError';
         return false;
     }
 }

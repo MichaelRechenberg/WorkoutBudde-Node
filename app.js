@@ -5,7 +5,7 @@
 
 
 var helpers = require('./helpers.js');
-
+var querystring = require('querystring');
 
 
 //Init Express app and Router
@@ -112,15 +112,52 @@ router.get('/findBudde$', function(req, res){
 });
 
 router.post('/findBudde/submit$', function(req, res){
-  //HTML escape all entities
-  //req.body is modified by this function
-  helpers.escapeAllStrings(req.body);
-  console.log(req.body);
-  res.redirect("/findbudde/submit/success");
+  var values = {};
+  values.lat = req.body.latitude;
+  values.lng = req.body.longitude;
+  values.range = req.body.range;
+  var queryStr = querystring.stringify(values);
+  res.redirect('/findBudde/submit/results?' + queryStr);
 });
 
-router.get('/findBudde/submit/success$', function(req, res){
-    res.render('success.pug', {});
+//Display Results to User
+router.get('/findBudde/submit/results', function(req, res){
+  var lat = req.query.lat;
+  var lng = req.query.lng;
+  var range = req.query.range;
+  //error check the query parameters
+  //If any of these conditions are true then some user tried to modify 
+  //  the query string (using lat/lng from [0-180] rather than [-90 to 
+  //  90] or manually setting range higher than 10000 kilometers to 
+  //  try and extract user data
+  if(lat < -90 || lat > 90 || lng < -90 || lat > 90 || range < 0 || range > 100000){
+    res.status(400).send("Bad Query");
+  }
+  else{
+    var values = [];
+    values.push(req.query.lat);
+    values.push(req.query.lng);
+    values.push(req.query.range);
+    var queryObj = {
+      text: "SELECT firstname, lastname, username FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3",
+      values: values
+    }
+    //data is an array containing rows of objects where the object properties
+    //  are the columns designated in the query
+    //If no rows are returned, then data is an empty array
+    db.any(queryObj).then((data)=>{
+        data.forEach((val)=>{
+           console.log(val.username);
+        }); 
+        res.render('findbudderesults.pug', {results: data});
+      })
+      .catch((reason)=>{
+        console.log("Error in findbudde/submit/results");
+        console.log(reason);
+        res.status(500).send("Error In Query");
+    });
+  }
+
 });
 
 router.get('/login/', function(req, res){

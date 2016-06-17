@@ -26,7 +26,7 @@ html
         div(id="geocodePrompt")
           div(class="alert alert-info") Enter Address Information To See If Address Is Valid
         p Within What Kilometer Range?
-        select
+        select(id="select_range")
           option(value="5") 5 
           option(value="10") 10
           option(value="15") 15
@@ -35,6 +35,7 @@ html
           option(value="30") 30
           option(value="50") 50
           option(value="75") 75
+        input(id="input_range", name="range", type="hidden")
         div(id="validationError")
         br
         input(id="submit", type="submit", value="Find A Budde!")
