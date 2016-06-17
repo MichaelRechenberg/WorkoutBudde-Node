@@ -9,5 +9,15 @@ h1 {
   margin: 5px 0px 5px 0px;
 }
 
+#first-last-name{
+  font-size: 4em;
+}
+
+
+#availability table{
+  margin: 10px 10px 10px 10px;
+  width:100%;
+}
+
 
 

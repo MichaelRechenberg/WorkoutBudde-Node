@@ -1,0 +1,49 @@
+html
+  head
+    title=user.firstname + ' ' + user.lastname
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset="utf-8")
+    link(rel="stylesheet", href="/css/style.css", type="text/css")
+  body
+    div(id="content-wrapper", class="container-fluid")   
+      div(id="personalInfo", class="row")
+        div(class="col-md-2")
+          img(src="/img/dummyImage.png", alt="dummyImage", width="100px", height="100px")
+        div(id="first-last-name", class="col-md-8")
+          span=user.firstname + ' ' + user.lastname
+      br
+      div(id="availability", class="row")
+        table
+          tr
+            th Day
+            th Available
+            th Start Time
+            th End Time
+          tr
+          each val in ["sun", "mon", "tues", "wed", "thurs", "fri", "sat"]
+            tr
+              th=val
+              //Convert true/false to Yes/No
+              if user[val]
+                th Yes
+                th=user[val+"_start_time"]
+                th=user[val+"_end_time"]
+              else
+                th No
+      br 
+      div(id="exercises", class="row")
+        div(class="col-md-12") Exercises That #{user.firstname} Enjoys
+        ul
+         each val in user.exercises
+          li=val 
+          
+          
+      
+
+
+    //jQuery library for Bootstrap
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
+    //Bootstrap Stylesheet Setup
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    //Javascript for Bootstrap
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")

@@ -89,9 +89,19 @@ app.use(function(req, res, next){
 });
 
 
-//-------------------------------------------------------//
+//---------------Middleware for Parmameters-----------------//
 
 
+//Middleware to ensure that user_id is an integer
+router.param('user_id', function(req, res, next, user_id){
+    user_id = Number(user_id);
+    if(Number.isInteger(user_id)){
+      next();
+    }
+    else{
+      res.status(404).render("404.pug");
+    }
+});
 
 //-----------ROUTING----------------//
 
@@ -142,7 +152,6 @@ router.get('/findBudde/submit/results', function(req, res){
       text: "SELECT firstname, lastname, username FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3",
       values: values
     }
-    console.log(pgp.as.format(queryObj.text, queryObj.values));
     //data is an array containing rows of objects where the object properties
     //  are the columns designated in the query
     //If no rows are returned, then data is an empty array
@@ -154,7 +163,6 @@ router.get('/findBudde/submit/results', function(req, res){
       })
       .catch((reason)=>{
         console.log("Error in findbudde/submit/results");
-        console.log(reason);
         res.status(500).send("Error In Query");
     });
   }
@@ -178,17 +186,14 @@ router.get('/login/', function(req, res){
 router.post('/login$', function(req, res){
   var username = req.body.username;
   var providedPass = req.body.password;
-  console.log(username);
   var queryObj = {
     text: "SELECT salt, password FROM users WHERE username=$1",
     values: [username]
   };
   db.one(queryObj).then(function(data){
-      console.log("Valid username");
       var salt = data.salt;
       var hashedProvidedPass = helpers.hashPassword(salt, providedPass);
       if(hashedProvidedPass == data.password){
-        console.log("Correct login credentials!");
         req.session.auth = true;
         res.redirect('/');
       }
@@ -384,6 +389,36 @@ router.post('/newuser/', function(req, res){
 });
 
 
+router.get('/profile/:user_id', function(req, res){
+    var user_id = req.params.user_id;
+
+    queryObj = {
+      text: "SELECT firstname, lastname, username, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity FROM users WHERE user_id=$1",
+     values: [user_id] 
+    }
+    db.one(queryObj).then(function(data){
+        data.exercises = [];
+        if(data.exer_swimming)
+          data.exercises.push("Swimming");
+        if(data.exer_yoga)
+          data.exercises.push("Yoga");
+        if(data.exer_cycling)
+          data.exercises.push("Cycling");
+        if(data.exer_running)
+          data.exercises.push("Running");
+        if(data.exer_lifting)
+          data.exercises.push("Lifting");
+        if(data.exer_indoor_sports)
+          data.exercises.push("Indoor Sports");
+        if(data.exer_outdoor_sports)
+          data.exercises.push("Outdoor Sports");
+        res.render('profile.pug', {user: data});
+      })
+   .catch(function(reason){
+     console.log(reason);
+     res.status(500).send("Server Error");
+    }); 
+});
 
 app.use(router);
 
