@@ -56,9 +56,8 @@ function validateForm(){
           }
           //Both of the times are filled in, check to make sure the start time is before the end time
           else{
-              console.log("derp");
               if(end.value.localeCompare(start.value) <= 0){
-                  var error = genError('The start time is after or equato the end time for day ' + ++i);
+                  var error = genError('The start time is after or equal to the end time for day ' + ++i);
                   validationError.appendChild(error);
                   valid = false;
               }
@@ -77,14 +76,38 @@ function validateForm(){
       }
     })(daySelected);
 
-    location.hash = '#validationError';
+    //Check to see if user selected at least one exercise
+    var exercise_list = document.querySelectorAll('.exercise_list');
+    //boolean value indicating a value was selected
+    var exerciseSelected = false;
+    for(var i = 0; i < exercise_list.length; i++){
+        if(exercise_list[i].checked){
+          exerciseSelected = true;
+        }
+    }
+    //notify user and invalidate form if user did not select at least
+    //  one exercise
+    ((asdf)=>{
+      if(!asdf){
+        var error = genError('You must select at least one exercise');
+        validationError.appendChild(error);
+        valid = false;
+      }
+    })(exerciseSelected); 
+
 
     //VALID_LOCATION is set by geocode.js
-    if(VALID_LOCATION){
-        return valid;
+    //Form is valid, allow form to be submitted
+    if(valid && VALID_LOCATION){ 
+        return true;
     }
+    //Form is invalid 
     else{
-        validationError.appendChild(genError('Invalid Address'));
+        //Invalid address, add error
+        if(!VALID_LOCATION){
+          validationError.appendChild(genError('Invalid Address'));
+        }
+        location.hash = '#validationError';
         return false;
     }
 }

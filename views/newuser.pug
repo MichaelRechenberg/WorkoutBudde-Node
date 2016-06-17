@@ -55,7 +55,7 @@ html
           -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"]
           each exercise in exercises
             label=exercise
-              input(class="form-control", name="exercise", type="checkbox", value=exercise)
+              input(class="form-control exercise_list", name="exercise", type="checkbox", value=exercise)
         fieldset(id="intensity")
           each intensity in ["Casual", "Moderate", "Intense"]
             label=intensity
