@@ -137,11 +137,12 @@ router.get('/findBudde/submit/results', function(req, res){
     var values = [];
     values.push(req.query.lat);
     values.push(req.query.lng);
-    values.push(req.query.range);
+    values.push(req.query.range*1000);
     var queryObj = {
       text: "SELECT firstname, lastname, username FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3",
       values: values
     }
+    console.log(pgp.as.format(queryObj.text, queryObj.values));
     //data is an array containing rows of objects where the object properties
     //  are the columns designated in the query
     //If no rows are returned, then data is an empty array
