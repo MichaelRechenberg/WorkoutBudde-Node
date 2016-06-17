@@ -12,10 +12,12 @@ html(lang="en")
         |   to find a Budde! 
       if(loggedIn)
         a(href="/logout") Logout
+        br
+        a(href="/profile/"+user_id) Profile
       else
         a(href="/login") Login
-      br
-      a(href="/newuser") Create New Profile
+        br
+        a(href="/newuser") Create New Profile
       
 
 

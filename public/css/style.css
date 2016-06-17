@@ -3,6 +3,20 @@ h1 {
 	text-align: center;
 }
 
+.center-align{
+  width:100%;
+  margin: auto;
+}
+
+#login_wrapper{
+  width:50%;
+  text-align: center;
+}
+
+#login_wrapper .center p,input{
+margin:auto auto;
+}
+
 .time_box {
   padding: 5px;
   border: 2px solid black;

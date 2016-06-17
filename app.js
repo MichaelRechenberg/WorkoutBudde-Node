@@ -109,8 +109,10 @@ router.param('user_id', function(req, res, next, user_id){
 router.get('/', function(req, res){
   var context = {};
   //the user is logged in already
-  if(req.session.auth)
+  if(req.session.auth){
     context.loggedIn = true;
+    context.user_id = req.session.user_id;
+  }
   res.render('frontpage.pug', context);
 });
 
@@ -187,13 +189,16 @@ router.post('/login$', function(req, res){
   var username = req.body.username;
   var providedPass = req.body.password;
   var queryObj = {
-    text: "SELECT salt, password FROM users WHERE username=$1",
+    text: "SELECT user_id, salt, password FROM users WHERE username=$1",
     values: [username]
   };
   db.one(queryObj).then(function(data){
       var salt = data.salt;
       var hashedProvidedPass = helpers.hashPassword(salt, providedPass);
+      //The user logged in successfully, set any session variables
+      //user_id is set
       if(hashedProvidedPass == data.password){
+        req.session.user_id = data.user_id
         req.session.auth = true;
         res.redirect('/');
       }
@@ -393,7 +398,7 @@ router.get('/profile/:user_id', function(req, res){
     var user_id = req.params.user_id;
 
     queryObj = {
-      text: "SELECT firstname, lastname, username, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity FROM users WHERE user_id=$1",
+      text: "SELECT firstname, lastname, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity FROM users WHERE user_id=$1",
      values: [user_id] 
     }
     db.one(queryObj).then(function(data){
