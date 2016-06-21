@@ -40,6 +40,9 @@ html
         ul
          each val in user.exercises
           li=val 
+      br
+      -var intensity = {'C': 'Casual', 'M': 'Moderate', 'I': 'INTENSE'};
+      p=user.firstname + "'s workouts are " + intensity[user.intensity]
           
           
       
