@@ -25,7 +25,7 @@ CREATE TABLE users(
         street VARCHAR(40) NOT NULL,
         city VARCHAR(30) NOT NULL,
         state VARCHAR(30) NOT NULL,
-        zip_code INT NOT NULL,
+        zip_code VARCHAR(10) NOT NULL,
         gym_id INT,
         coord POINT NOT NULL,
         earth_coord EARTH,

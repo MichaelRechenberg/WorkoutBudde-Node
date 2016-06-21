@@ -43,7 +43,7 @@ function geocodeAddress(){
       },
       error: function(xhr, err){
         VALID_LOCATION = false;
-        alert("Error in making API call, contact site administrator");
+        console.log("Error in making API call");
       }
     });
 }

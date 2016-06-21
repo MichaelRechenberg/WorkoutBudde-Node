@@ -180,6 +180,7 @@ router.get('/login/', function(req, res){
     else{
       var context = {};
       context.csrfToken = res.locals.csrftoken;
+      context.redirect = '/';
       var error = req.query.error;
       if(error)
         context.error = error;
@@ -198,11 +199,11 @@ router.post('/login$', function(req, res){
       var salt = data.salt;
       var hashedProvidedPass = helpers.hashPassword(salt, providedPass);
       //The user logged in successfully, set any session variables
-      //user_id is set
+      //user_id is set here
       if(hashedProvidedPass == data.password){
         req.session.user_id = data.user_id
         req.session.auth = true;
-        res.redirect('/');
+        res.redirect(req.body.redirect);
       }
       else{
         var error=encodeURIComponent("Invalid Username Or Password");
@@ -246,129 +247,7 @@ router.post('/newuser/', function(req, res){
   //if the username has not been used before, insert into DB
   //In exercise-times, 0-Sun, 1-Mon,...6-Sat
   db.none(queryObj).then(function(data){
-        var values={};
-        values.username = req.body.username;
-        var salt = helpers.generateSalt();
-        values.salt = salt;
-        req.body.password = helpers.hashPassword(salt, req.body.password);
-        values.password = req.body.password;
-        values.firstname = req.body.firstname;
-        values.lastname = req.body.lastname;
-        values.street = req.body.street;
-        values.city = req.body.city;
-        values.state = req.body.state;
-        values.zip_code = req.body.zip_code;
-        values.coord = 'POINT(' + req.body.latitude + ',' + req.body.longitude + ')';
-        values.earth_coord = 'll_to_earth(' + req.body.latitude + ','  + req.body.longitude + ')'
-        values.swimming = false;
-        values.cycling = false;
-        values.lifting = false;
-        values.running = false;
-        values.yoga = false;
-        values.outdoor_sports = false;
-        values.indoor_sports = false;
-        //ensure req.body.exercise is an array
-        if(typeof req.body.exercise == 'string'){
-            var temp = req.body.exercise;
-            req.body.exercise = [];
-            req.body.exercise.push(temp);
-        }
-        req.body.exercise.forEach((val)=>{
-          switch(val){
-            case 'Swimming':
-              values.swimming=true;
-              break;
-            case 'Cycling':
-              values.cycling=true;
-              break;
-            case 'Running':
-              values.running=true;
-              break;
-            case 'Lifting':
-              values.lifting=true;
-              break;
-            case 'Yoga':
-              values.yoga=true;
-              break;
-            case 'Outdoor Sports':
-              values.outdoor_sports=true;
-              break;
-            case 'Indoor Sports':
-              values.indoor_sports=true;
-              break;
-            default:
-              break;
-          }
-        });
-        values.sun = false;
-        values.sun_start_time = '00:00:00';
-        values.sun_end_time = '23:59:59';
-        values.mon = false;
-        values.mon_start_time = '00:00:00';
-        values.mon_end_time = '23:59:59';
-        values.tues = false;
-        values.tues_start_time = '00:00:00';
-        values.tues_end_time = '23:59:59';
-        values.wed = false;
-        values.wed_start_time = '00:00:00';
-        values.wed_end_time = '23:59:59';
-        values.thurs = false;
-        values.thurs_start_time = '00:00:00';
-        values.thurs_end_time = '23:59:59';
-        values.fri = false;
-        values.fri_start_time = '00:00:00';
-        values.fri_end_time = '23:59:59';
-        values.sat = false;
-        values.sat_start_time = '00:00:00';
-        values.sat_end_time = '23:59:59';
-        values.intensity = req.body.intensity;
-        //make sure exercise-time is an array before iterating
-        if(typeof req.body["exercise-time"] == 'string'){
-          var temp = req.body["exercise-time"];
-          req.body["exercise-time"] = [];
-          req.body["exercise-time"].push(temp);
-        }
-        req.body["exercise-time"].forEach((val)=>{
-          var start = 2*val;
-          var end = 2*val + 1;
-          if(val == 0){
-            values.sun = true;
-            values.sun_start_time = req.body.time[start];
-            values.sun_end_time = req.body.time[end];
-          }
-          else if(val == 1){
-            values.mon = true;
-            values.mon_start_time = req.body.time[start];
-            values.mon_end_time = req.body.time[end];
-          }
-          else if(val == 2){
-            values.tues = true;
-            values.tues_start_time = req.body.time[start];
-            values.tues_end_time = req.body.time[end];
-          }
-          else if(val == 3){
-            values.wed = true;
-            values.wed_start_time = req.body.time[start];
-            values.wed_end_time = req.body.time[end];
-          }
-          else if(val == 4){
-            values.thurs = true;
-            values.thurs_start_time = req.body.time[start];
-            values.thurs_end_time = req.body.time[end];
-          }
-          else if(val == 5){
-            values.fri = true;
-            values.fri_start_time = req.body.time[start];
-            values.fri_end_time = req.body.time[end];
-          }
-          else if(val == 6){
-            values.sat = true;
-            values.sat_start_time = req.body.time[start];
-            values.sat_end_time = req.body.time[end];
-          }
-          
-        });
-
+        var values = helpers.convertReqToValuesObj(req);
         var insertObj = {
           text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<state>, $<zip_code>, $<coord^>, $<earth_coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>)",
           values: values 
@@ -395,7 +274,88 @@ router.post('/newuser/', function(req, res){
 
 });
 
+/**
+  Page for User to edit the information on their profile
+  Requires them to be logged in
+  */
+router.get('/profile/editProfile', function(req, res){
+  
+  if(req.session.auth){
+    var user_id = req.session.user_id;
+    var queryObj = {
+      text: "SELECT username, firstname, lastname, street, city, state, zip_code, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity FROM users WHERE user_id=$1",
+      values:[user_id] 
+    }
+    db.one(queryObj)
+      .then(function(data){
+        console.log(data);
+        var context = {};
+        context.csrfToken = res.locals.csrftoken;
+        context.user = data;
+        res.render('editprofile.pug', context);
+      }).catch(function(reason){
+        console.log("Error in profile/editProfile");
+        console.log(reason);
+        res.status(500).send("Server Error");
+      });
+    
+    
+  }
+  //The user is not logged, render the login page
+  //The login page will redirect back to the editProfile page
+  //  once the user has logged in
+  else{
+    context = {};
+    context.csrfToken = res.locals.csrftoken;
+    context.redirect = req.url; 
+    res.render('login.pug', context);
+  }
+  
+});
 
+/**
+  Process update request from the user
+  */
+router.post('/profile/editProfile', function(req, res){
+    console.log("derp");
+    if(req.session.auth){
+      var user_id = req.session.user_id;
+      var values = helpers.convertReqToValuesObj(req); 
+      values.user_id = user_id;
+      var queryObj = {
+          text: "UPDATE users SET username=$<username>, firstname=$<firstname>, lastname=$<lastname>, street=$<street>, city=$<city>, state=$<state>, zip_code=$<zip_code>, coord=$<coord^>, earth_coord=$<earth_coord^>, exer_swimming=$<swimming>, exer_running=$<running>, exer_lifting=$<lifting>, exer_yoga=$<yoga>, exer_cycling=$<cycling>, exer_indoor_sports=$<indoor_sports>, exer_outdoor_sports=$<outdoor_sports>, sun=$<sun>, sun_start_time=$<sun_start_time>, sun_end_time=$<sun_end_time>, mon=$<mon>, mon_start_time=$<mon_start_time>, mon_end_time=$<mon_end_time>, tues=$<tues>, tues_start_time=$<tues_start_time>, tues_end_time=$<tues_end_time>, wed=$<wed>, wed_start_time=$<wed_start_time>, wed_end_time=$<wed_end_time>, thurs=$<thurs>, thurs_start_time=$<thurs_start_time>, thurs_end_time=$<thurs_end_time>, fri=$<fri>, fri_start_time=$<fri_start_time>, fri_end_time=$<fri_end_time>, sat=$<sat>, sat_start_time=$<sat_start_time>, sat_end_time=$<sat_end_time>, intensity=$<intensity> WHERE user_id=$<user_id>",
+          values: values 
+      }
+      var a = ""
+      a = pgp.as.format(queryObj.text, queryObj.values);
+      db.none(a)
+        .then(function(data){
+          res.send("Successfully Updated Information!<br> <a href='/profile'>Click here to go back to profile</a>");
+          })
+        .catch(function(reason){
+          console.log(reason);
+          res.status(500).send("Server Error");
+      });
+      
+    }
+    //User was not logged in when the post was made, bad request
+    else{
+      res.status(400).send("Bad Request");
+    }
+});
+
+
+router.get('/profile/', function(req,res){
+  if(req.session.auth){
+    res.redirect('/profile/' + req.session.user_id);
+  }
+  else{
+    var context = {};
+    context.csrfToken = res.locals.csrftoken;
+    context.redirect = req.url;
+    res.render('login.pug', context);
+  }
+});
 router.get('/profile/:user_id', function(req, res){
     var user_id = req.params.user_id;
 
@@ -419,7 +379,12 @@ router.get('/profile/:user_id', function(req, res){
           data.exercises.push("Indoor Sports");
         if(data.exer_outdoor_sports)
           data.exercises.push("Outdoor Sports");
-        res.render('profile.pug', {user: data});
+        var context = {};
+        context.user = data;
+        //denotes if the user is already logged in based on 
+        //  session storing user_id from inital login
+        context.loggedIn = req.session.user_id == user_id;
+        res.render('profile.pug', context);
       })
    .catch(function(reason){
      console.log(reason);

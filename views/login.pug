@@ -11,6 +11,7 @@ html
         p=error
       form(id="login-form", name="login-form", method="POST", action="/login")
         input(name="_csrf", type="hidden", value=csrfToken)
+        input(name="redirect", type="hidden", value=redirect)
         div(class="center")
           p Username:
           input(name="username", type="text")

@@ -12,6 +12,8 @@ html
         div(id="first-last-name", class="col-md-8")
           span=user.firstname + ' ' + user.lastname
       br
+      if loggedIn
+        a(href="/profile/editProfile/") Edit Profile
       div(id="availability", class="row")
         table
           tr

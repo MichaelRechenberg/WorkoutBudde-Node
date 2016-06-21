@@ -1,0 +1,83 @@
+html
+  head
+    title Edit WorkoutBudde Profile
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset="utf-8")
+    link(rel="stylesheet", href="/css/style.css", type="text/css")
+  body
+    .container-fluid
+      h1 Edit Your WorkoutBudde Profile
+      if error
+        p=error
+      form(id="new-user-form", name="new-user-form", method="POST", action="/profile/editProfile", onsubmit="return validateForm()")
+        input(id="latitude", name="latitude", type="hidden")
+        input(id="longitude", name="longitude", type="hidden")
+        input(name="_csrf", type="hidden", value=csrfToken)
+        p First Name
+        input(id="firstname", class="form-control", name="firstname", type="text", value=user.firstname, required)
+        p Last Name
+        input(id="lastname", class="form-control", name="lastname", type="text", value=user.lastname, required)
+        p Username
+        input(id="username", class="form-control", name="username", type="text", value=user.username, required)
+        br
+        p Street
+        input(id="street", class="form-control", name="street", type="text", onchange="geocodeAddress()", value=user.street, required)
+        br
+        p City
+        input(id="city", class="form-control", name="city", type="text", onchange="geocodeAddress()", value=user.city, required)
+        p State 
+        input(id="state", class="form-control", name="state", type="text", onchange="geocodeAddress()", value=user.state, required)
+        br
+        p Zip Code
+        input(id="zip_code", class="form-control", name="zip_code", type="text", pattern="[0-9]+", value=user.zip_code, onchange="geocodeAddress()", required)
+        div(id="geocodePrompt")
+          div(class="alert alert-info") Enter Address Information To See If Address Is Valid
+        br
+        fieldset(id="exercise-times") 
+          -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
+          each day, index in days
+           -var prefix = day.toLowerCase();
+           -var start = user[prefix +'_start_time'];
+           -start = start.substring(0,5);
+           -var end = user[prefix + '_end_time'];
+           -end = end.substring(0,5);
+           div(class="time_box")
+            label=day
+              if user[prefix]
+                input(class="form-control chooseDay", name="exercise-time", type="checkbox", value=index, checked)
+              else 
+                input(class="form-control chooseDay", name="exercise-time", type="checkbox", value=index)
+            p Start Time (In the form of HH:MM, 24-hour time (00:00-23:59))
+            input(class="form-control time_input", name="time", placeholder="15:00", type="time", pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]", value=start)
+            p End Time (In the form of HH:MM, 24-hour time (00:00-23:59))
+            input(class="form-control time_input", name="time", placeholder="18:15", type="time", value=end)
+            label Full-Day (Click this if you are free the whole day)
+              if user[prefix] && start=='00:00' && end =='23:59'
+                input(class="fullDay", name="fullDay", type="checkbox", value=index, checked)
+              else
+                input(class="fullDay", name="fullDay", type="checkbox", value=index)
+            br
+        fieldset(id="exercises")
+          -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"];
+          each exercise in exercises
+            -var suffix = exercise.toLowerCase();
+            label=exercise
+              if user['exer_' + suffix]
+                input(class="form-control exercise_list", name="exercise", type="checkbox", value=exercise, checked)
+              else
+                input(class="form-control exercise_list", name="exercise", type="checkbox", value=exercise)
+        fieldset(id="intensity")
+          each intensity in ["Casual", "Moderate", "Intense"]
+            label=intensity
+              input(class="form-control", name="intensity", type="radio", value=intensity[0], required)
+         
+        div(id="validationError")
+        input(id="submit", type="submit", value="EDIT PROFILE")
+    //jQuery library for Bootstrap
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
+    //Bootstrap Stylesheet Setup
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    //Javascript for Bootstrap
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+    script(src="/lib/validateEditUser.js")
+    script(src="/lib/geocode.js")
