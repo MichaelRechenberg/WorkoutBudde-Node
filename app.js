@@ -200,6 +200,7 @@ router.post('/login$', function(req, res){
       var hashedProvidedPass = helpers.hashPassword(salt, providedPass);
       //The user logged in successfully, set any session variables
       //user_id is set here
+      //Also any session variables should be set in /newuser route
       if(hashedProvidedPass == data.password){
         req.session.user_id = data.user_id
         req.session.auth = true;
@@ -249,16 +250,16 @@ router.post('/newuser/', function(req, res){
   db.none(queryObj).then(function(data){
         var values = helpers.convertReqToValuesObj(req);
         var insertObj = {
-          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<state>, $<zip_code>, $<coord^>, $<earth_coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>)",
+          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<state>, $<zip_code>, $<coord^>, $<earth_coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>) RETURNING user_id",
           values: values 
         };
         var a = "";
         a = pgp.as.format(insertObj.text, insertObj.values);
         console.log(a);
-        db.none(a).then(function(){
-            //log the person in
-            console.log("sucess?");
+        db.one(a).then(function(data){
+            //log the person in and set any session variables
             req.session.auth = true;
+            req.session.user_id = data.user_id;
             res.redirect('/');
           }).catch(function(reason){
              //TODO: Add this to logger like Winston or Morgan
@@ -350,10 +351,7 @@ router.get('/profile/', function(req,res){
     res.redirect('/profile/' + req.session.user_id);
   }
   else{
-    var context = {};
-    context.csrfToken = res.locals.csrftoken;
-    context.redirect = req.url;
-    res.render('login.pug', context);
+    helpers.haveUserLoginAndReturn(req, res);
   }
 });
 
@@ -364,6 +362,21 @@ router.get('/profile/deleteProfile', function(req, res){
     else{
       helpers.haveUserLoginAndReturn(req, res);
     }
+});
+
+router.delete('profile/deleteProfile', function(req, res){
+    var queryObj = {
+      text: "DELETE FROM users WHERE user_id=$1",
+      values: [req.session.user_id]
+    };
+    db.none(queryObj)
+      .then(function(data){
+        res.redirect('/logout');
+        })
+      .catch(function(reason){
+        console.log(reason);
+        res.status(500).send("Server Error");
+    });
 });
 router.get('/profile/view/:user_id', function(req, res){
     var user_id = req.params.user_id;
