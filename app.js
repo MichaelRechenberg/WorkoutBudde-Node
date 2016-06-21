@@ -357,20 +357,25 @@ router.get('/profile/', function(req,res){
 
 router.get('/profile/deleteProfile', function(req, res){
     if(req.session.auth){
-      res.render('deleteprofile.pug');
+      var context = {};
+      context.csrfToken = res.locals.csrftoken;
+      res.render('deleteprofile.pug', context);
     }
     else{
       helpers.haveUserLoginAndReturn(req, res);
     }
 });
-
-router.delete('profile/deleteProfile', function(req, res){
+/**
+  Perform actual deletion of user's profile
+  */
+router.post('/profile/deleteProfile', function(req, res){
     var queryObj = {
       text: "DELETE FROM users WHERE user_id=$1",
       values: [req.session.user_id]
     };
     db.none(queryObj)
       .then(function(data){
+        console.log("RIP that person");
         res.redirect('/logout');
         })
       .catch(function(reason){
@@ -415,7 +420,7 @@ router.get('/profile/view/:user_id', function(req, res){
 });
 
 //Catch-all route to display a 404
-router.get('*', function(req, res){
+router.all('*', function(req, res){
     res.status(404).render('404.pug');
 });
 
