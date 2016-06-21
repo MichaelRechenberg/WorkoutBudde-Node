@@ -348,7 +348,7 @@ router.post('/profile/editProfile', function(req, res){
 
 router.get('/profile/', function(req,res){
   if(req.session.auth){
-    res.redirect('/profile/' + req.session.user_id);
+    res.redirect('/profile/view/' + req.session.user_id);
   }
   else{
     helpers.haveUserLoginAndReturn(req, res);
