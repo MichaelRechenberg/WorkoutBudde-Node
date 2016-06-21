@@ -356,7 +356,16 @@ router.get('/profile/', function(req,res){
     res.render('login.pug', context);
   }
 });
-router.get('/profile/:user_id', function(req, res){
+
+router.get('/profile/deleteProfile', function(req, res){
+    if(req.session.auth){
+      res.render('deleteprofile.pug');
+    }
+    else{
+      helpers.haveUserLoginAndReturn(req, res);
+    }
+});
+router.get('/profile/view/:user_id', function(req, res){
     var user_id = req.params.user_id;
 
     queryObj = {
@@ -391,6 +400,12 @@ router.get('/profile/:user_id', function(req, res){
      res.status(500).send("Server Error");
     }); 
 });
+
+//Catch-all route to display a 404
+router.get('*', function(req, res){
+    res.status(404).render('404.pug');
+});
+
 
 app.use(router);
 

@@ -53,7 +53,14 @@ module.exports = {
       hashFunc.update(userPassword); 
       //return hashed data
       return hashFunc.digest('hex');
+    },
+    haveUserLoginAndReturn(req, res){
+      var context = {};
+      context.csrfToken = res.locals.csrftoken
+      context.redirect = req.url;
+      res.render('login.pug', context);
     }
+
 };
 /**
    Converts data from profile form to an array suitable for insertion 

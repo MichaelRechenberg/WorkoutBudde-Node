@@ -6,7 +6,7 @@ html
     ul
       each user in results
         li
-          a(href="/profile/"+user.user_id) #{user.firstname} #{user.lastname}
+          a(href="/profile/view/"+user.user_id) #{user.firstname} #{user.lastname}
         if user.distance == 0
           p  Less than 1 km away
         else 
