@@ -158,9 +158,18 @@ router.get('/findBudde/submit/results', function(req, res){
     var RESULTS_PER_PAGE = 10;
     values.push(RESULTS_PER_PAGE);
     values.push((page-1)*RESULTS_PER_PAGE);
+    var lowerLat = lat -1;
+    var upperLat = lat + 1;
+    var lowerLng = lng -1;
+    var upperLng = lng + 1;
+    values.push(lowerLat);
+    values.push(upperLat);
+    values.push(lowerLng);
+    values.push(upperLng);
     var queryObj = {
-      text: "SELECT user_id, firstname, lastname, distance FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3 ORDER BY distance LIMIT $4 OFFSET $5",
-      values: values
+      //Narrow search by creating temporary table near 
+      //If you need any fields, include it in both SELECT statements
+      text: "SELECT user_id, firstname, lastname, distance FROM (SELECT user_id, firstname, lastname, earth_coord FROM users WHERE (users.lat BETWEEN $6 AND $7)AND (users.lng BETWEEN $8 AND $9)) near, earth_distance(ll_to_earth($1, $2), near.earth_coord) AS distance WHERE distance < $3 ORDER BY distance LIMIT $4 OFFSET $5", values: values
     }
     //data is an array containing rows of objects where the object properties
     //  are the columns designated in the query
