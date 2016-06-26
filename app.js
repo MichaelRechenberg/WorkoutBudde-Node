@@ -155,9 +155,11 @@ router.get('/findBudde/submit/results', function(req, res){
     values.push(lng);
     values.push(range*1000);
     //OFFSET amount
-    values.push((page-1)*25);
+    var RESULTS_PER_PAGE = 10;
+    values.push(RESULTS_PER_PAGE);
+    values.push((page-1)*RESULTS_PER_PAGE);
     var queryObj = {
-      text: "SELECT user_id, firstname, lastname, distance FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3 ORDER BY distance LIMIT 25 OFFSET $4",
+      text: "SELECT user_id, firstname, lastname, distance FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3 ORDER BY distance LIMIT $4 OFFSET $5",
       values: values
     }
     //data is an array containing rows of objects where the object properties
@@ -210,6 +212,7 @@ router.post('/login$', function(req, res){
       //The user logged in successfully, set any session variables
       //user_id is set here
       //Also any session variables should be set in /newuser route
+
       if(hashedProvidedPass == data.password){
         req.session.user_id = data.user_id
         req.session.auth = true;
@@ -220,6 +223,7 @@ router.post('/login$', function(req, res){
         res.redirect('/login/?error=' + error);
       }
       }).catch(function(reason){
+        console.log(reason);
         var error=encodeURIComponent("Invalid Username Or Password");
         res.redirect('/login/?error=' + error);
   });

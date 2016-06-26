@@ -6,9 +6,11 @@ html
     -var prevPage = Number(query.page) -1
     -var nextPage = Number(query.page) + 1
     if prevPage > 0
-      a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&page=" + prevPage) Previous Page
+      a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&range=" + query.range + "&page=" + prevPage) Previous Page
       br
-    a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&page=" + nextPage) Next Page
+    //If there are 10 results, there *should* be more users
+    if results.length == 10
+      a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&range=" + query.range + "&page=" + nextPage) Next Page
     ul
       each user in results
         li
