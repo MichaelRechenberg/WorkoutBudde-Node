@@ -1,8 +1,10 @@
 import random 
+import string
 
 
-firstName = ['Michael', 'John', 'Madi', 'Emma', 'Maddie', 'Jesse', 'Brooke', 'Maria', 'Jack', 'Zach', 'Anthony', 'Harsha', 'Vinay', 'Jak']
-lastName = ['Rechenberg', 'Cox', 'Williams', 'Brown', 'Johnson', 'Bain', 'Zubricki', 'Daxter']
+
+firstName = ['Michael', 'John', 'Madi', 'Emma', 'Maddie', 'Jesse', 'Brooke', 'Maria', 'Jack', 'Zach', 'Anthony', 'Harsha', 'Vinay', 'Jak', 'Derp']
+lastName = ['Rechenberg', 'Cox', 'Williams', 'Brown', 'Johnson', 'Bain', 'Zubricki', 'Daxter', 'Nelson', 'Peterson', 'Asdf']
 
 def randEle(lis):
   upperBound = len(lis) -1
@@ -18,9 +20,10 @@ def coinflip():
 def genData():
   """Returns an INSERT INTO string for WorkoutBudde users table"""
 
-  result = "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) VALUES ("
-  result += "'RANDOMUSERNAME', "
+  result = "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, sun, mon, tues, wed, thurs, fri, sat, sun_start_time, sun_end_time, mon_start_time, mon_end_time, tues_start_time, tues_end_time, wed_start_time, wed_end_time, thurs_start_time, thurs_end_time, fri_start_time, fri_end_time, sat_start_time, sat_end_time, intensity) VALUES ("
+  username= "".join(random.choice(string.lowercase) for i in range(12))
 
+  result += "'{0}', ".format(username)
   result += "'7a365de276c45ad70d16', '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169', "
 
   result += "'" + randEle(firstName) + "', " 
@@ -65,13 +68,20 @@ def genData():
       result += "'0:00'::time, "
 
   #Intensity 
-  result += "'C');"
+  intensity = random.randint(0,2)
+  if intensity == 0:
+    result += "'C');"
+  elif intensity == 1:
+    result += "'M');"
+  elif intensity == 2:
+    result += "'I');"
   return result
 
 
-with open('insert.sql', 'w+') as f:
-  for x in xrange(10):
+with open('init.sql', 'a+') as f:
+  f.write("BEGIN;")
+  for x in xrange(100000):
     line = genData() 
     f.write(line + "\n")
-
+  f.write("COMMIT;")
 

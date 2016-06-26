@@ -10,7 +10,8 @@ There are 2 main tables used in WorkoutBudde:
   street VARCHAR(40)
   city VARCHAR(30)
   zip_code INT 
-  coord //Point containing (latitude, longitude) 
+  lat FLOAT (Latitude)
+  lng FLOAT (Longitude)
   earth_pt //precomupted earth data type used in conjuction with 
            // earthdistance to calculate great-circle distances
   gym_id // If NULL, the user did not indicate a gym. Else, id of a gym in the gyms table
