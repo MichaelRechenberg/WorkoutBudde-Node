@@ -128,6 +128,9 @@ router.post('/findBudde/submit$', function(req, res){
   values.lat = req.body.latitude;
   values.lng = req.body.longitude;
   values.range = req.body.range;
+  //represents what page the user is on, used
+  //  in OFFSET clause in SQL query
+  values.page = 1;
   var queryStr = querystring.stringify(values);
   res.redirect('/findBudde/submit/results?' + queryStr);
 });
@@ -137,6 +140,7 @@ router.get('/findBudde/submit/results', function(req, res){
   var lat = req.query.lat;
   var lng = req.query.lng;
   var range = req.query.range;
+  var page = req.query.page;
   //error check the query parameters
   //If any of these conditions are true then some user tried to modify 
   //  the query string (using lat/lng from [0-180] rather than [-90 to 
@@ -147,11 +151,13 @@ router.get('/findBudde/submit/results', function(req, res){
   }
   else{
     var values = [];
-    values.push(req.query.lat);
-    values.push(req.query.lng);
-    values.push(req.query.range*1000);
+    values.push(lat);
+    values.push(lng);
+    values.push(range*1000);
+    //OFFSET amount
+    values.push((page-1)*25);
     var queryObj = {
-      text: "SELECT user_id, firstname, lastname, distance FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3 ORDER BY distance",
+      text: "SELECT user_id, firstname, lastname, distance FROM users, earth_distance(ll_to_earth($1, $2), earth_coord) AS distance WHERE distance < $3 ORDER BY distance LIMIT 25 OFFSET $4",
       values: values
     }
     //data is an array containing rows of objects where the object properties
@@ -159,10 +165,13 @@ router.get('/findBudde/submit/results', function(req, res){
     //If no rows are returned, then data is an empty array
     db.any(queryObj).then((data)=>{
         data.forEach(function(val, index, data){
+          //Convert all distances from meters to kilometers
           data[index].distance = Math.floor(data[index].distance/1000);
           
         });
-        res.render('findbudderesults.pug', {results: data});
+        //results contains an array of users returned by the database
+        //query contains the query parameters given (used for constructing querystring for pagination)
+        res.render('findbudderesults.pug', {results: data, query: req.query});
       })
       .catch((reason)=>{
         console.log("Error in findbudde/submit/results");

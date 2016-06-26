@@ -20,7 +20,7 @@ def coinflip():
 def genData():
   """Returns an INSERT INTO string for WorkoutBudde users table"""
 
-  result = "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, sun, mon, tues, wed, thurs, fri, sat, sun_start_time, sun_end_time, mon_start_time, mon_end_time, tues_start_time, tues_end_time, wed_start_time, wed_end_time, thurs_start_time, thurs_end_time, fri_start_time, fri_end_time, sat_start_time, sat_end_time, intensity) VALUES ("
+  result = "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, lat, lng, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, sun, mon, tues, wed, thurs, fri, sat, sun_start_time, sun_end_time, mon_start_time, mon_end_time, tues_start_time, tues_end_time, wed_start_time, wed_end_time, thurs_start_time, thurs_end_time, fri_start_time, fri_end_time, sat_start_time, sat_end_time, intensity) VALUES ("
   username= "".join(random.choice(string.lowercase) for i in range(12))
 
   result += "'{0}', ".format(username)
@@ -35,7 +35,8 @@ def genData():
   result += "13375, "
   lat = str(random.randint(40, 42)) + '.' + str(random.randint(10000, 99999))
   lng = str(random.randint(-88, -86)) + '.' + str(random.randint(10000, 99999))
-  result += "POINT(" + lat + "," + lng + "), "
+  result += "{0}, ".format(lat)
+  result += "{0}, ".format(lng)
   result += "ll_to_earth(" + lat + "," + lng + "), "
 
   #Random exercises 

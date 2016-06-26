@@ -3,6 +3,12 @@ html
     title Success
   body
     h1 Buddes Near You
+    -var prevPage = Number(query.page) -1
+    -var nextPage = Number(query.page) + 1
+    if prevPage > 0
+      a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&page=" + prevPage) Previous Page
+      br
+    a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&page=" + nextPage) Next Page
     ul
       each user in results
         li
@@ -11,4 +17,3 @@ html
           p  Less than 1 km away
         else 
           p #{user.distance} km away 
-
