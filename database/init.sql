@@ -123,6 +123,8 @@ INSERT INTO users (username, salt, password, firstname, lastname, street, city, 
          'C'
          );
 
+INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, coord, earth_coord, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity) VALUES ('RocketMan', '7a365de276c45ad70d16', '0c13d9eb8c87513334a6f075796434353cdae33de8496f88012b7894550530481605f5c37e0863f8aff2f7ec34fb7e8b5730082a14ec1aa20002f41aefee2169', 'Jak', 'Daxter', '202 East Peabody Drive', 'Urbana', 'IL', 61820, POINT(40.101469, -88.23647), ll_to_earth(40.101469, -88.23647), False, False, True, False, True, True, False, False, False, True, True, True, True, False, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, '08:00'::time, 'C');
+
 DROP TABLE IF EXISTS test;
 CREATE TABLE test(
         derp POINT NOT NULL,
