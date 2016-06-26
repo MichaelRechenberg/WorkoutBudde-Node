@@ -16,7 +16,19 @@ function validateForm(){
     }
     //Boolean stating wheether or no the form was valid
     var valid = true;
-
+    var alphaNumSpacesUnder = /^[A-Za-z0-9_]+$/;
+    if(!alphaNumSpacesUnder.test(firstname.value)){
+      validationError.appendChild(genError('Invalid First Name. Please use alphanumeric characters only'));
+      valid = false;
+    } 
+    if(!alphaNumSpacesUnder.test(lastname.value)){
+      validationError.appendChild(genError('Invalid Last Name. Please use alphanumeric characters only'));
+      valid = false;
+    } 
+    if(!alphaNumSpacesUnder.test(username.value)){
+      validationError.appendChild(genError('Invalid  Username. Please use alphanumeric characters only'));
+      valid = false;
+    } 
     
     //boolean flag seeing if at least one day was selected
     var daySelected = false; 
