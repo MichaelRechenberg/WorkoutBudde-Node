@@ -43,14 +43,32 @@ html
       br
       -var intensity = {'C': 'Casual', 'M': 'Moderate', 'I': 'INTENSE'};
       p=user.firstname + "'s workouts are " + intensity[user.intensity]
+      if loggedIn
+        div(id="notifications")
+          h2 Notifications:
+          ul
+          -var count = 0;
+          each notification in notifications
+            if notification.other_user_id
+              li
+                a(href="/profile/view/" + notification.other_user_id) #{notification.message}
+                form(id="buddeRequest"+count, class="budde-request-form", method="POST", action="/buddeRequest")
+                  input(type="hidden", name="_csrf", value=csrftoken)
+                  input(type="hidden", name="recievingUserId", value=user_id)
+                  input(type="hidden", name="askingUserId", value=notification.other_user_id)
+                  input(type="hidden", name="notif_id", value=notification.notif_id)
+                  input(type="submit", value="Add As A Budde")
+              -count++;
+            else
+              li=notification.message
+
           
           
       
-
-
     //jQuery library for Bootstrap
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
     //Bootstrap Stylesheet Setup
     link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
     //Javascript for Bootstrap
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+    script(src="/lib/buddeRequest.js")

@@ -59,12 +59,14 @@ app.use(session({
   store: new RedisStore({
     host: 'localhost',
     port: 6379,
-    ttl: 250
+    disableTTL: true,
   }),
   resave: true,
   saveUninitialized: true,
   httpOnly: true,
   proxy: true,
+  //be logged in for a day
+  maxAge: 1000*60*60*24,
   cookie: {secure: false},
 }));
 
@@ -407,12 +409,17 @@ router.post('/profile/deleteProfile', function(req, res){
 });
 router.get('/profile/view/:user_id', function(req, res){
     var user_id = req.params.user_id;
+    //Used to pass in data to Pug Template
+    var context = {};
+    context.csrftoken = res.locals.csrftoken;
+    context.user_id = user_id;
 
     queryObj = {
       text: "SELECT firstname, lastname, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity FROM users WHERE user_id=$1",
      values: [user_id] 
     }
-    db.one(queryObj).then(function(data){
+    //Get the main info (personal info, exercises, availability)
+    var mainInfo = db.one(queryObj).then(function(data){
         data.exercises = [];
         if(data.exer_swimming)
           data.exercises.push("Swimming");
@@ -428,17 +435,62 @@ router.get('/profile/view/:user_id', function(req, res){
           data.exercises.push("Indoor Sports");
         if(data.exer_outdoor_sports)
           data.exercises.push("Outdoor Sports");
-        var context = {};
         context.user = data;
         //denotes if the user is already logged in based on 
         //  session storing user_id from inital login
         context.loggedIn = req.session.user_id == user_id;
-        res.render('profile.pug', context);
       })
    .catch(function(reason){
      console.log(reason);
      res.status(500).send("Server Error");
     }); 
+
+  //Get any notifications
+  var notifQueryObj = {
+    text: "SELECT notif_id, message, other_user_id FROM Notifications WHERE owner_user_id=$1 ORDER BY time_created LIMIT 5",
+    values: [user_id]
+  }
+  var notifications = db.any(notifQueryObj);
+  notifications.then(function(data){
+      context.notifications = data;
+  });
+  notifications.catch(function(reason){
+      console.log(reason);
+      res.status(500).send("Server Error");
+  });
+
+  Promise.all([notifications, mainInfo])
+    .then(function(){
+        res.render('profile.pug', context);
+    })
+    .catch(function(reason){
+        res.send("Uhhh.");
+    });
+
+
+
+});
+
+router.post('/buddeRequest', function(req, res){
+  //The user_id of the user that is logged in
+  var loggedInUserId = req.body.recievingUserId;
+  //The user_id of the user that is asking to be a Budde
+  var askingUserId = req.body.askingUserId;
+  var smaller = Math.min(loggedInUserId, askingUserId);
+  var larger = Math.max(loggedInUserId, askingUserId);
+
+  //Transaction
+  db.tx(function(t){
+    var insertNewBudde = this.none("INSERT INTO Buddes VALUES ($1, $2)", [smaller, larger]);
+    var deleteNotification = this.none("DELETE FROM Notifications WHERE notif_id=$1", [req.body.notif_id]);
+    this.batch([insertNewBudde, deleteNotification]);
+    })
+    .catch(function(reason){
+      //TODO: send bad http status?
+      console.log(reason);
+  });
+  
+  res.end();
 });
 
 //Catch-all route to display a 404

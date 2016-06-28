@@ -81,7 +81,7 @@ def genData():
 
 with open('init.sql', 'a+') as f:
   f.write("BEGIN;")
-  for x in xrange(1000):
+  for x in xrange(1000000):
     line = genData() 
     f.write(line + "\n")
   f.write("COMMIT;")
