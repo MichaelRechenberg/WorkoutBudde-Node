@@ -29,3 +29,12 @@ CREATE TABLE Buddes(
 
 GRANT ALL PRIVILEGES ON Buddes TO app;
 
+DROP TABLE IF EXISTS ContactInfo;
+CREATE TABLE ContactInfo(
+    user_id INT PRIMARY KEY REFERENCES users (user_id) ON DELETE CASCADE,
+    email VARCHAR(50),
+    phone_num VARCHAR(20)
+    );
+
+INSERT INTO ContactInfo (user_id, phone_num) VALUES (1, '(630)-479-4012');
+INSERT INTO ContactInfo (user_id, phone_num) VALUES (3, '(815)-867-5309');

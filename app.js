@@ -413,6 +413,15 @@ router.get('/profile/view/:user_id', function(req, res){
     var context = {};
     context.csrftoken = res.locals.csrftoken;
     context.user_id = user_id;
+    //denotes if the user is already logged in based on 
+    //  session storing user_id from inital login
+    context.ownProfile = req.session.user_id == user_id;
+
+
+
+    //Used to store all our promises
+    var promiseArr = []; 
+
 
     queryObj = {
       text: "SELECT firstname, lastname, exer_swimming, exer_cycling, exer_lifting, exer_running, exer_yoga, exer_outdoor_sports, exer_indoor_sports, mon, tues, wed, thurs, fri, sat, sun, mon_start_time, tues_start_time, wed_start_time, thurs_start_time, fri_start_time, sat_start_time, sun_start_time, mon_end_time, tues_end_time, wed_end_time, thurs_end_time, fri_end_time, sat_end_time, sun_end_time, intensity FROM users WHERE user_id=$1",
@@ -436,41 +445,71 @@ router.get('/profile/view/:user_id', function(req, res){
         if(data.exer_outdoor_sports)
           data.exercises.push("Outdoor Sports");
         context.user = data;
-        //denotes if the user is already logged in based on 
-        //  session storing user_id from inital login
-        context.loggedIn = req.session.user_id == user_id;
       })
    .catch(function(reason){
      console.log(reason);
      res.status(500).send("Server Error");
     }); 
+  promiseArr.push(mainInfo);
 
-  //Get any notifications
-  var notifQueryObj = {
-    text: "SELECT notif_id, message, other_user_id FROM Notifications WHERE owner_user_id=$1 ORDER BY time_created LIMIT 5",
-    values: [user_id]
+  //Only get notifications if the user is on their own profile
+  if(context.ownProfile){
+    //Get any notifications
+    var notifQueryObj = {
+      text: "SELECT notif_id, message, other_user_id FROM Notifications WHERE owner_user_id=$1 ORDER BY time_created LIMIT 5",
+      values: [user_id]
+    }
+    var notifications = db.any(notifQueryObj);
+    notifications.then(function(data){
+        context.notifications = data;
+    });
+    notifications.catch(function(reason){
+        console.log(reason);
+        res.status(500).send("Server Error");
+    });
+    promiseArr.push(notifications);
+  } 
+
+  //If the user is logged in and they are viewing
+  //  a profile other than their own, see if the
+  // logged in user is friends with this user's profile
+  if(req.session.auth && (req.session.user_id != user_id)){
+      //Done to adhere to Budde table standard that the smaller user_id
+      //  is stored in user_1 and the larger user_id
+      //  is stored in user_2
+      var smaller = Math.min(req.session.user_id, user_id);
+      var larger = Math.max(req.session.user_id, user_id);
+      var friendQueryObj = {
+        text: "SELECT COUNT(*) AS row_count FROM Buddes WHERE user_1=$1 AND user_2=$2", 
+        values: [smaller, larger]
+      }
+      var friend = db.oneOrNone(friendQueryObj)
+        .then(function(data){
+          //They are friends
+          if(data.row_count == 1){
+            context.isFriend = true;
+          }
+          else{
+            context.isFriend = false;
+          }
+      });
+      
+      promiseArr.push(friend);
   }
-  var notifications = db.any(notifQueryObj);
-  notifications.then(function(data){
-      context.notifications = data;
-  });
-  notifications.catch(function(reason){
-      console.log(reason);
-      res.status(500).send("Server Error");
-  });
-
-  Promise.all([notifications, mainInfo])
+  Promise.all(promiseArr)
     .then(function(){
+        console.log(context);
         res.render('profile.pug', context);
     })
     .catch(function(reason){
-        res.send("Uhhh.");
+        console.log(reason);
+        res.status(500).send("Server Error");
     });
-
 
 
 });
 
+//Process a BuddeRequest, making the two users Buddes
 router.post('/buddeRequest', function(req, res){
   //The user_id of the user that is logged in
   var loggedInUserId = req.body.recievingUserId;

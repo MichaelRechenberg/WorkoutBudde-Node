@@ -12,7 +12,7 @@ html
         div(id="first-last-name", class="col-md-8")
           span=user.firstname + ' ' + user.lastname
       br
-      if loggedIn
+      if ownProfile
         a(href="/profile/editProfile/") Edit Profile
         br
         a(href="/profile/deleteProfile/" style="color:red") Delete Profile
@@ -43,7 +43,7 @@ html
       br
       -var intensity = {'C': 'Casual', 'M': 'Moderate', 'I': 'INTENSE'};
       p=user.firstname + "'s workouts are " + intensity[user.intensity]
-      if loggedIn
+      if ownProfile
         div(id="notifications")
           h2 Notifications:
           ul
