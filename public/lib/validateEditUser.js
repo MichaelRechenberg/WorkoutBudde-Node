@@ -3,7 +3,6 @@ var VALID_LOCATION = false;
 function validateForm(){
     var firstname = document.getElementById("firstname");
     var lastname = document.getElementById("lastname");
-    var username = document.getElementById("username");
     var street = document.getElementById("street");
     var city = document.getElementById("city");
     var zip_code = document.getElementById("zip_code");
@@ -23,10 +22,6 @@ function validateForm(){
     } 
     if(!alphaNumSpacesUnder.test(lastname.value)){
       validationError.appendChild(genError('Invalid Last Name. Please use alphanumeric characters only'));
-      valid = false;
-    } 
-    if(!alphaNumSpacesUnder.test(username.value)){
-      validationError.appendChild(genError('Invalid  Username. Please use alphanumeric characters only'));
       valid = false;
     } 
     
