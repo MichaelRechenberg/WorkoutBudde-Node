@@ -214,7 +214,7 @@ router.post('/login$', function(req, res){
   var username = req.body.username;
   var providedPass = req.body.password;
   var queryObj = {
-    text: "SELECT user_id, salt, password FROM users WHERE username=$1",
+    text: "SELECT user_id, salt, firstname, lastname, password FROM users WHERE username=$1",
     values: [username]
   };
   db.one(queryObj).then(function(data){
@@ -226,6 +226,8 @@ router.post('/login$', function(req, res){
 
       if(hashedProvidedPass == data.password){
         req.session.user_id = data.user_id
+        req.session.firstname = data.firstname;
+        req.session.lastname= data.lastname;
         req.session.auth = true;
         res.redirect(req.body.redirect);
       }
@@ -461,7 +463,7 @@ router.get('/profile/view/:user_id', function(req, res){
     //Get any notifications
     var BRQueryObj = {
       text: "SELECT notif_id, message, other_user_id FROM BuddeRequests WHERE owner_user_id=$1 ORDER BY time_created LIMIT 5",
-      values: [user_id]
+      values: [req.session.user_id]
     }
     var buddeRequests = db.any(BRQueryObj);
     buddeRequests.then(function(data){
@@ -505,7 +507,7 @@ router.get('/profile/view/:user_id', function(req, res){
   Promise.all(promiseArr)
     //If the user is a friend to the logged in user
     //  then retrieve the contact Info of the profile being visited and then render the page
-    //Else, render the page now
+    //Else, see if a friend request is pending
     .then(function(){
         if(context.isFriend){
           let contactInfoQueryObj = {
@@ -518,7 +520,30 @@ router.get('/profile/view/:user_id', function(req, res){
           });
         }
         else{
-          return Promise.resolve();
+          //The user is visiting their own profile,
+          // so there is no reason to view pending
+          // BuddeRequests
+          if(context.ownProfile){
+            return Promise.resolve();
+          }
+          //See if the friend request is pending
+          // if the user is loggedIn
+          else if (context.loggedIn){
+            let buddeRequestPendingQO = {
+              text: "SELECT COUNT(*) AS rowcount FROM BuddeRequests WHERE owner_user_id=$1 AND other_user_id=$2",
+              values: [req.session.user_id, user_id]
+            };
+
+            return db.one(buddeRequestPendingQO)
+              .then(function(data){
+                if(data.rowcount == 0){
+                  context.requestPending = false;
+                }
+                else{
+                  context.requestPending = true;
+                }
+            });
+          }
         }
     })
     .then(function(){
@@ -533,26 +558,54 @@ router.get('/profile/view/:user_id', function(req, res){
 
 });
 
+//Process a BuddeRequest, creating a BuddeRequest// from the logged in user to another user
+//Done by making an entry in the BuddeRequest Table 
+router.post('/buddeRequest/makeRequest/', function(req, res){
+    //Only process the request if the user is logged in
+    if(req.session.auth){
+      console.log(req.body);
+      let message = req.session.firstname + ' ' + req.session.lastname + ' would like to be your Budde!';
+      let queryObj = {
+        text: "INSERT INTO BuddeRequests (owner_user_id, message, sender_name, other_user_id) VALUES ($1, $2, $3, $4)",
+        values: [req.body.recievingUserId, message, req.session.firstname + ' ' + req.session.lastname, req.session.user_id]
+      };
+      db.none(queryObj)
+        .then(function(){
+          console.log("Friend Request Made Successfully");
+          res.end();
+       })
+        .catch(function(reason){
+          console.log(reason);
+          res.status(500).send("Server Error");
+       });
+    }
+    else{
+      res.status(400).send("Bad Request");
+    }
+});
+
 //Process a BuddeRequest, making the two users Buddes
 router.post('/buddeRequest/makeBuddes', function(req, res){
-  //The user_id of the user that is logged in
-  var loggedInUserId = req.body.recievingUserId;
-  //The user_id of the user that is asking to be a Budde
-  var askingUserId = req.body.askingUserId;
-  var smaller = Math.min(loggedInUserId, askingUserId);
-  var larger = Math.max(loggedInUserId, askingUserId);
+  if(req.session.auth){
+    //The user_id of the user that is logged in
+    var loggedInUserId = req.body.recievingUserId;
+    //The user_id of the user that is asking to be a Budde
+    var askingUserId = req.body.askingUserId;
+    var smaller = Math.min(loggedInUserId, askingUserId);
+    var larger = Math.max(loggedInUserId, askingUserId);
 
-  //Transaction
-  db.tx(function(t){
-    var insertNewBudde = this.none("INSERT INTO Buddes VALUES ($1, $2)", [smaller, larger]);
-    var deleteNotification = this.none("DELETE FROM BuddeRequests WHERE notif_id=$1", [req.body.notif_id]);
-    this.batch([insertNewBudde, deleteNotification]);
-    })
-    .catch(function(reason){
-      //TODO: send bad http status?
-      console.log(reason);
-  });
-  
+    //Transaction
+    db.tx(function(t){
+      var insertNewBudde = this.none("INSERT INTO Buddes VALUES ($1, $2)", [smaller, larger]);
+      var deleteNotification = this.none("DELETE FROM BuddeRequests WHERE notif_id=$1", [req.body.notif_id]);
+      this.batch([insertNewBudde, deleteNotification]);
+      })
+      .catch(function(reason){
+        //TODO: send bad http status?
+        console.log(reason);
+    });
+    
+  }
   res.end();
 });
 
