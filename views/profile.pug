@@ -16,6 +16,12 @@ html
         a(href="/profile/editProfile/") Edit Profile
         br
         a(href="/profile/deleteProfile/" style="color:red") Delete Profile
+      else 
+        if isFriend
+          p You and #{user.firstname} are Buddes!
+        else  
+          p BUDDE REQUEST GOES HERE
+
       div(id="availability", class="row")
         table
           tr

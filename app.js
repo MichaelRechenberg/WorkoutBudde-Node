@@ -508,7 +508,7 @@ router.get('/profile/view/:user_id', function(req, res){
             text: "SELECT email, phone_num FROM ContactInfo WHERE user_id=$1",
             values: [user_id] 
           };
-          return db.one(contactInfoQueryObj)
+          return db.oneOrNone(contactInfoQueryObj)
             .then(function(data){
               context.contactInfo = data;
           });
@@ -541,7 +541,7 @@ router.post('/buddeRequest', function(req, res){
   //Transaction
   db.tx(function(t){
     var insertNewBudde = this.none("INSERT INTO Buddes VALUES ($1, $2)", [smaller, larger]);
-    var deleteNotification = this.none("DELETE FROM Notifications WHERE notif_id=$1", [req.body.notif_id]);
+    var deleteNotification = this.none("DELETE FROM BuddeRequests WHERE notif_id=$1", [req.body.notif_id]);
     this.batch([insertNewBudde, deleteNotification]);
     })
     .catch(function(reason){
