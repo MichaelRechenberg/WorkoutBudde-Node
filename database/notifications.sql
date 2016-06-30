@@ -5,7 +5,7 @@ CREATE TABLE BuddeRequests(
     time_created TIMESTAMP DEFAULT now() NOT NULL,
     message VARCHAR(500) NOT NULL,
     sender_name VARCHAR(50) NOT NULL,
-    other_user_id INT REFERENCES users (user_id) ON DELETE CASCADE,
+    other_user_id INT REFERENCES users (user_id) ON DELETE CASCADE NOT NULL,
     link VARCHAR(256)
     );
 CREATE INDEX ON BuddeRequests (owner_user_id);
