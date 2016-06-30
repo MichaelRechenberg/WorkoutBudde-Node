@@ -30,6 +30,10 @@ html
         div(id="geocodePrompt")
           div(class="alert alert-info") Enter Address Information To See If Address Is Valid
         br
+        p Phone Number (Optional)
+        input(id="phone_num", class="form-control", name="phone_num", type="text")
+        p Email (Optional)
+        input(id="email", class="form-control", name="email", type="email")
         fieldset(id="exercise-times") 
           -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
           each day, index in days
