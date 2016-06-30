@@ -43,24 +43,33 @@ html
       br
       -var intensity = {'C': 'Casual', 'M': 'Moderate', 'I': 'INTENSE'};
       p=user.firstname + "'s workouts are " + intensity[user.intensity]
+      if contactInfo
+        if contactInfo.phone_num
+          p Phone Number: #{contactInfo.phone_num}
+        else
+          p No Phone Number Provided
+        if contactInfo.email
+          p Email: #{contactInfo.email}
+        else
+          p No Email Provided
       if ownProfile
-        div(id="notifications")
-          h2 Notifications:
+        div(id="buddeRequests")
+          h2 Budde Requests:
           ul
           -var count = 0;
-          each notification in notifications
-            if notification.other_user_id
+          each request in buddeRequests
+            if request.other_user_id
               li
-                a(href="/profile/view/" + notification.other_user_id) #{notification.message}
+                a(href="/profile/view/" + request.other_user_id) #{request.message}
                 form(id="buddeRequest"+count, class="budde-request-form", method="POST", action="/buddeRequest")
                   input(type="hidden", name="_csrf", value=csrftoken)
                   input(type="hidden", name="recievingUserId", value=user_id)
-                  input(type="hidden", name="askingUserId", value=notification.other_user_id)
-                  input(type="hidden", name="notif_id", value=notification.notif_id)
+                  input(type="hidden", name="askingUserId", value=request.other_user_id)
+                  input(type="hidden", name="notif_id", value=request.notif_id)
                   input(type="submit", value="Add As A Budde")
               -count++;
             else
-              li=notification.message
+              li=request.message
 
           
           

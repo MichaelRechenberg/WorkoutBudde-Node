@@ -455,19 +455,19 @@ router.get('/profile/view/:user_id', function(req, res){
   //Only get notifications if the user is on their own profile
   if(context.ownProfile){
     //Get any notifications
-    var notifQueryObj = {
-      text: "SELECT notif_id, message, other_user_id FROM Notifications WHERE owner_user_id=$1 ORDER BY time_created LIMIT 5",
+    var BRQueryObj = {
+      text: "SELECT notif_id, message, other_user_id FROM BuddeRequests WHERE owner_user_id=$1 ORDER BY time_created LIMIT 5",
       values: [user_id]
     }
-    var notifications = db.any(notifQueryObj);
-    notifications.then(function(data){
-        context.notifications = data;
+    var buddeRequests = db.any(BRQueryObj);
+    buddeRequests.then(function(data){
+        context.buddeRequests = data;
     });
-    notifications.catch(function(reason){
+    buddeRequests.catch(function(reason){
         console.log(reason);
         res.status(500).send("Server Error");
     });
-    promiseArr.push(notifications);
+    promiseArr.push(buddeRequests);
   } 
 
   //If the user is logged in and they are viewing
@@ -496,7 +496,27 @@ router.get('/profile/view/:user_id', function(req, res){
       
       promiseArr.push(friend);
   }
+
+
   Promise.all(promiseArr)
+    //If the user is a friend to the logged in user
+    //  then retrieve the contact Info of the profile being visited and then render the page
+    //Else, render the page now
+    .then(function(){
+        if(context.isFriend){
+          let contactInfoQueryObj = {
+            text: "SELECT email, phone_num FROM ContactInfo WHERE user_id=$1",
+            values: [user_id] 
+          };
+          return db.one(contactInfoQueryObj)
+            .then(function(data){
+              context.contactInfo = data;
+          });
+        }
+        else{
+          return Promise.resolve();
+        }
+    })
     .then(function(){
         console.log(context);
         res.render('profile.pug', context);
