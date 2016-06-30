@@ -67,7 +67,7 @@ html
             if request.other_user_id
               li
                 a(href="/profile/view/" + request.other_user_id) #{request.message}
-                form(id="buddeRequest"+count, class="budde-request-form", method="POST", action="/buddeRequest")
+                form(id="buddeRequest"+count, class="budde-request-form", method="POST", action="/buddeRequest/makeBuddes")
                   input(type="hidden", name="_csrf", value=csrftoken)
                   input(type="hidden", name="recievingUserId", value=user_id)
                   input(type="hidden", name="askingUserId", value=request.other_user_id)

@@ -530,7 +530,7 @@ router.get('/profile/view/:user_id', function(req, res){
 });
 
 //Process a BuddeRequest, making the two users Buddes
-router.post('/buddeRequest', function(req, res){
+router.post('/buddeRequest/makeBuddes', function(req, res){
   //The user_id of the user that is logged in
   var loggedInUserId = req.body.recievingUserId;
   //The user_id of the user that is asking to be a Budde
