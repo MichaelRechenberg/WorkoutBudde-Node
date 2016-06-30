@@ -1,0 +1,6 @@
+mixin makeBuddeRequestForm(user_id_of_requested)
+  form(id="makeBuddeRequestForm", class="budde-request-form", method="POST", action="/buddeRequest/makeRequest")
+    
+    input(type="hidden", name="_csrf", value=csrftoken)
+    input(type="hidden", name="recievingUserId", value=user_id_of_requested)
+    input(type="submit", value="Add As A Budde")
