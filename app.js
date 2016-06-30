@@ -265,7 +265,6 @@ router.get('/newuser/', function(req, res){
 //Process form information from New User Page
 //TODO: Make sure untrusted info is sanitized
 router.post('/newuser/', function(req, res){
-  console.log(req.body);
   var queryObj = {
     text: "SELECT user_id FROM users WHERE username=$1",
     values: [req.body.username]
@@ -327,12 +326,10 @@ router.get('/profile/editProfile', function(req, res){
     var contactInfo = db.one("SELECT email, phone_num FROM ContactInfo WHERE user_id=$1", [user_id]);
     Promise.all([mainInfo, contactInfo])
       .then(function(data){
-        console.log(data);
         var context = {};
         context.csrfToken = res.locals.csrftoken;
         context.user = data[0];
         context.contactInfo = data[1];
-        console.log(context);
         res.render('editprofile.pug', context);
       }).catch(function(reason){
         console.log("Error in profile/editProfile");
@@ -548,7 +545,7 @@ router.get('/profile/view/:user_id', function(req, res){
           else if (context.loggedIn){
             let buddeRequestPendingQO = {
               text: "SELECT COUNT(*) AS rowcount FROM BuddeRequests WHERE owner_user_id=$1 AND other_user_id=$2",
-              values: [req.session.user_id, user_id]
+              values: [user_id, req.session.user_id]
             };
 
             return db.one(buddeRequestPendingQO)
