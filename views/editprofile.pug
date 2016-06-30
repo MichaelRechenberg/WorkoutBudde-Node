@@ -31,9 +31,9 @@ html
           div(class="alert alert-info") Enter Address Information To See If Address Is Valid
         br
         p Phone Number (Optional)
-        input(id="phone_num", class="form-control", name="phone_num", type="text")
+        input(id="phone_num", class="form-control", name="phone_num", type="text", value=contactInfo.phone_num)
         p Email (Optional)
-        input(id="email", class="form-control", name="email", type="email")
+        input(id="email", class="form-control", name="email", type="email", value=contactInfo.email)
         fieldset(id="exercise-times") 
           -var days = ["Sun", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat"]
           each day, index in days
