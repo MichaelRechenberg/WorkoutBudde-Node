@@ -16,7 +16,7 @@ INSERT INTO BuddeRequests (owner_user_id, sender_name, other_user_id, message) V
 INSERT INTO BuddeRequests (owner_user_id, sender_name, other_user_id, message) VALUES (1, 'Vinay Johnson', 8967, 'Vinay Johnson would like to be your Budde!');
 
 GRANT ALL PRIVILEGES ON BuddeRequests TO app;
-GRANT ALL PRIVILEGES ON notifications_notif_id_seq TO app;
+GRANT ALL PRIVILEGES ON budderequests_notif_id_seq TO app;
 
 DROP TABLE IF EXISTS Buddes;
 --Always have user_1 be the user with the smaller user_id (the ordering is arbitrary)
