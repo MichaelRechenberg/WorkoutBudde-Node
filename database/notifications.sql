@@ -11,7 +11,6 @@ CREATE TABLE BuddeRequests(
 CREATE INDEX ON BuddeRequests (owner_user_id);
 
 INSERT INTO BuddeRequests (owner_user_id, sender_name, other_user_id, message) VALUES (1, 'Jak Daxter', 6, 'Jak Daxter would like to be your Budde!');
-INSERT INTO BuddeRequests (owner_user_id, sender_name, message) VALUES (6, 'WorkoutBuddeWebsite', 'How Are You Doing?');
 INSERT INTO BuddeRequests (owner_user_id, sender_name, other_user_id, message) VALUES (2, 'Jak Daxter', 891480, 'Jak Daxter would like to be your Budde!');
 INSERT INTO BuddeRequests (owner_user_id, sender_name, other_user_id, message) VALUES (1, 'Vinay Johnson', 8967, 'Vinay Johnson would like to be your Budde!');
 
