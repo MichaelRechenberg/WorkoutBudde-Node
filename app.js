@@ -244,7 +244,7 @@ router.post('/login$', function(req, res){
 
 router.get('/logout/', function(req, res){
    if(req.session.auth){
-    req.session.auth=false;
+      req.session.destroy();
    }
    res.redirect('/');
 });
@@ -412,10 +412,14 @@ router.get('/profile/view/:user_id', function(req, res){
     //Used to pass in data to Pug Template
     var context = {};
     context.csrftoken = res.locals.csrftoken;
+    //indicates if the user viewing the profile is logged in
+    context.loggedIn = req.session.auth;
+    //holds user_id of the page being viewed
     context.user_id = user_id;
     //denotes if the user is already logged in based on 
     //  session storing user_id from inital login
     context.ownProfile = req.session.user_id == user_id;
+    
 
 
 

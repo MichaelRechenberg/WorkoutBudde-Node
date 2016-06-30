@@ -1,3 +1,4 @@
+include mixins/makeBuddeRequest
 html
   head
     title=user.firstname + ' ' + user.lastname
@@ -12,15 +13,19 @@ html
         div(id="first-last-name", class="col-md-8")
           span=user.firstname + ' ' + user.lastname
       br
-      if ownProfile
-        a(href="/profile/editProfile/") Edit Profile
-        br
-        a(href="/profile/deleteProfile/" style="color:red") Delete Profile
-      else 
-        if isFriend
-          p You and #{user.firstname} are Buddes!
-        else  
-          p BUDDE REQUEST GOES HERE
+      //Viewable only for logged in users
+      if loggedIn
+        if ownProfile
+          a(href="/profile/editProfile/") Edit Profile
+          br
+          a(href="/profile/deleteProfile/" style="color:red") Delete Profile
+        else 
+          if isFriend
+            p You and #{user.firstname} are Buddes!
+          else  
+            p BUDDE REQUEST GOES HERE
+      else
+        p Log or Create an Account to Ask to Be A Budde
 
       div(id="availability", class="row")
         table
