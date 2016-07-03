@@ -1,0 +1,5 @@
+mixin exerciseFields()
+  -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"];
+  each exercise in exercises
+    label=exercise
+      input(class="form-control exercise_list", name="exercises", type="checkbox", value=exercise)
