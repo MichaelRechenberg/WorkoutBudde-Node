@@ -125,6 +125,7 @@ router.get('/findBudde$', function(req, res){
     });
 });
 
+//Accept form and create query string for /findBudde/submit/results
 router.post('/findBudde/submit$', function(req, res){
   var values = {};
   values.lat = req.body.latitude;
@@ -133,6 +134,10 @@ router.post('/findBudde/submit$', function(req, res){
   //represents what page the user is on, used
   //  in OFFSET clause in SQL query
   values.page = 1;
+  //add exercses to the query only if the user provided any
+  if(req.body.exercises){
+    values.exercises = req.body.exercises;
+  }
   var queryStr = querystring.stringify(values);
   res.redirect('/findBudde/submit/results?' + queryStr);
 });
@@ -148,7 +153,7 @@ router.get('/findBudde/submit/results', function(req, res){
   //  the query string (using lat/lng from [0-180] rather than [-90 to 
   //  90] or manually setting range higher than 10000 kilometers to 
   //  try and extract user data
-  if(lat < -90 || lat > 90 || lng < -90 || lat > 90 || range < 0 || range > 100000){
+  if(lat < -90 || lat > 90 || lng < -90 || lat > 90 || range < 0 || range > 100){
     res.status(400).send("Bad Query");
   }
   else{
@@ -171,8 +176,62 @@ router.get('/findBudde/submit/results', function(req, res){
     var queryObj = {
       //Narrow search by creating temporary table near 
       //If you need any fields, include it in both SELECT statements
-      text: "SELECT user_id, firstname, lastname, distance FROM (SELECT user_id, firstname, lastname, earth_coord FROM users WHERE (users.lat BETWEEN $6 AND $7)AND (users.lng BETWEEN $8 AND $9)) near, earth_distance(ll_to_earth($1, $2), near.earth_coord) AS distance WHERE distance < $3 ORDER BY distance LIMIT $4 OFFSET $5", values: values
+      text: "SELECT user_id, firstname, lastname, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, distance FROM (SELECT user_id, firstname, lastname, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, earth_coord FROM users WHERE (users.lat BETWEEN $6 AND $7)AND (users.lng BETWEEN $8 AND $9)) near, earth_distance(ll_to_earth($1, $2), near.earth_coord) AS distance WHERE distance < $3", 
+      values: values
+    };
+    //Add exercises to query, if the user requested it 
+    if(req.query.exercises){
+      //ensure req.query.exercises is an array
+      if(typeof req.query.exercises == 'string'){
+        req.query.exercises = [req.query.exercises];
+      }
+      var exercises = req.query.exercises;
+      var queryText = queryObj.text;
+      //Used to convert string of exercise
+      //To the corresponding column in the DB
+      var addExerCol = function(value){
+        switch(value){
+          case 'Swimming':
+            return 'exer_swimming=True';
+            break;
+          case 'Running':
+            return 'exer_running=True';
+            break;
+          case 'Lifting':
+            return 'exer_lifting=True';
+            break;
+          case 'Yoga':
+            return 'exer_yoga=True';
+            break;
+          case 'Cycling':
+            return 'exer_cycling=True';
+            break;
+          case 'Indoor Sports':
+            return 'exer_indoor_sports=True';
+            break;
+          case 'Outdoor Sports':
+            return 'exer_outdoor_sports=True';
+            break;
+          default:
+            throw "Invalid Exercise"
+            break;
+        }
+      };
+      queryText += ' AND ('
+      //For all but the last exercise, add the
+      // exercise column and the 'OR' keyword
+      for(var i = 0; i < exercises.length -1; i++){
+        queryText += (addExerCol(exercises[i]) + " OR ");
+      }
+      //For the last exercise, close off the ')'
+      queryText += (addExerCol(exercises[exercises.length-1]) + ")");
+
+    queryObj.text = queryText;
+
     }
+
+    queryObj.text += ' ORDER BY distance LIMIT $4 OFFSET $5'
+    console.log(queryObj.text);
     //data is an array containing rows of objects where the object properties
     //  are the columns designated in the query
     //If no rows are returned, then data is an empty array
@@ -182,9 +241,27 @@ router.get('/findBudde/submit/results', function(req, res){
           data[index].distance = Math.floor(data[index].distance/1000);
           
         });
+
+        //Generate links for next/prev page
+        links = {}
+        req.query.page = Number(req.query.page);
+        //make req.query.page a Number for use with +-
+        if(req.query.page > 1){
+          req.query.page -= 1;
+          links.prevPage = querystring.stringify(req.query);
+          req.query.page += 1;
+        }
+
+          req.query.page += 1;
+          links.nextPage = querystring.stringify(req.query);
+          req.query.page -= 1;
+
         //results contains an array of users returned by the database
         //query contains the query parameters given (used for constructing querystring for pagination)
-        res.render('findbudderesults.pug', {results: data, query: req.query});
+        res.render('findbudderesults.pug', {
+          results: data, 
+          links: links
+        });
       })
       .catch((reason)=>{
         console.log("Error in findbudde/submit/results");

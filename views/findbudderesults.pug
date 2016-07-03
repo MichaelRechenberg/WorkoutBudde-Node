@@ -3,14 +3,10 @@ html
     title Success
   body
     h1 Buddes Near You
-    -var prevPage = Number(query.page) -1
-    -var nextPage = Number(query.page) + 1
-    if prevPage > 0
-      a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&range=" + query.range + "&page=" + prevPage) Previous Page
+    if links.prevPage 
+      a(href="/findBudde/submit/results?" + links.prevPage) Previous Page
       br
-    //If there are 10 results, there *should* be more users
-    if results.length == 10
-      a(href="/findbudde/submit/results/?lat=" + query.lat + "&lng=" + query.lng + "&range=" + query.range + "&page=" + nextPage) Next Page
+    a(href="/findBudde/submit/results?" + links.nextPage) Next Page
     ul
       each user in results
         li
