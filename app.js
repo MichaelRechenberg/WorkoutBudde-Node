@@ -621,7 +621,7 @@ router.get('/profile/view/:user_id', function(req, res){
           // if the user is loggedIn
           else if (context.loggedIn){
             let buddeRequestPendingQO = {
-              text: "SELECT COUNT(*) AS rowcount FROM BuddeRequests WHERE owner_user_id=$1 AND other_user_id=$2",
+              text: "SELECT COUNT(*) AS rowcount FROM BuddeRequests WHERE (owner_user_id=$1 AND other_user_id=$2) OR (other_user_id=$1 AND owner_user_id=$2)",
               values: [user_id, req.session.user_id]
             };
 
