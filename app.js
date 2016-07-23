@@ -153,7 +153,7 @@ router.get('/findBudde/submit/results', function(req, res){
   //  the query string (using lat/lng from [0-180] rather than [-90 to 
   //  90] or manually setting range higher than 10000 kilometers to 
   //  try and extract user data
-  if(lat < -90 || lat > 90 || lng < -90 || lat > 90 || range < 0 || range > 100){
+  if(lat < -90 || lat > 90 || lng < -180 || lng > 180 || range < 0 || range > 100){
     res.status(400).send("Bad Query");
   }
   else{
