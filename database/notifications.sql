@@ -18,13 +18,13 @@ GRANT ALL PRIVILEGES ON BuddeRequests TO app;
 GRANT ALL PRIVILEGES ON budderequests_notif_id_seq TO app;
 
 DROP TABLE IF EXISTS Buddes;
---Always have user_1 be the user with the smaller user_id (the ordering is arbitrary)
 CREATE TABLE Buddes(
     user_1 INT REFERENCES users (user_id) ON DELETE CASCADE,
     user_2 INT REFERENCES users (user_id) ON DELETE CASCADE,
     time_created TIMESTAMP DEFAULT now() NOT NULL,
     PRIMARY KEY (user_1, user_2)
     );
+--CREATE INDEX ON user_1 if it speeds up queries
 
 GRANT ALL PRIVILEGES ON Buddes TO app;
 

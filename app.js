@@ -682,14 +682,15 @@ router.post('/buddeRequest/makeBuddes', function(req, res){
     var loggedInUserId = req.body.recievingUserId;
     //The user_id of the user that is asking to be a Budde
     var askingUserId = req.body.askingUserId;
-    var smaller = Math.min(loggedInUserId, askingUserId);
-    var larger = Math.max(loggedInUserId, askingUserId);
 
     //Transaction
+    //Make two entries to show symmetrical relationship
     db.tx(function(t){
-      var insertNewBudde = this.none("INSERT INTO Buddes VALUES ($1, $2)", [smaller, larger]);
+      
+      var insertNewBudde1 = this.none("INSERT INTO Buddes VALUES ($1, $2)", [loggedInUserId, askingUserId]);
+      var insertNewBudde2 = this.none("INSERT INTO Buddes VALUES ($2, $1)", [loggedInUserId, askingUserId]);
       var deleteNotification = this.none("DELETE FROM BuddeRequests WHERE notif_id=$1", [req.body.notif_id]);
-      this.batch([insertNewBudde, deleteNotification]);
+      this.batch([insertNewBudde1, insertNewBudde2, deleteNotification]);
       })
       .catch(function(reason){
         //TODO: send bad http status?
