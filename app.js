@@ -649,6 +649,38 @@ router.get('/profile/view/:user_id', function(req, res){
 
 });
 
+
+//Get all of the user's friends, in alphabetical order
+router.get('/profile/viewFriends', (req, res)=>{
+    if(req.session.auth){
+      let user_id = req.session.user_id;
+      let queryObj = {
+
+        text: "SELECT user_id, firstname, lastname FROM users INNER JOIN Buddes ON users.user_id=Buddes.user_2 WHERE user_1=$1 ORDER BY firstname",
+        values: [user_id]
+
+      };
+
+      let retrieveAllFriends = db.any(queryObj)
+        .then((data)=>{
+          let context = {};
+          context.user = {};
+          context.user.firstname = req.session.firstname;
+
+          context.results = data;
+          res.render('viewfriends.pug', context);
+
+        })
+        .catch((reason)=>{
+          console.log(reason);
+          res.status(400).send("Bad Query");
+        });
+    }
+    else{
+      helpers.haveUserLoginAndReturn(req, res);
+    }
+ });
+
 //Process a BuddeRequest, creating a BuddeRequest// from the logged in user to another user
 //Done by making an entry in the BuddeRequest Table 
 router.post('/buddeRequest/makeRequest/', function(req, res){

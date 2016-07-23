@@ -1,0 +1,17 @@
+doctype html
+html(lang="en")
+  head
+    title #{user.firstname}'s Buddes
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    meta(charset="utf-8")
+  body
+    .container-fluid
+      .jumbotron
+        h1 #{user.firstname}'s Buddes
+    .container-fluid
+      ul
+        if(results.length===0)
+          p No Buddes Yet 
+        each budde in results
+          li
+            a(href="/profile/view/"+budde.user_id) #{budde.firstname} #{budde.lastname}
