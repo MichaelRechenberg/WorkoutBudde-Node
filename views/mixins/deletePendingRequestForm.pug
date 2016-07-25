@@ -1,0 +1,6 @@
+mixin deletePendingRequestForm(user_id_of_requested)
+  form(id="deletePendingRequestForm", class="delete-budde-request-form", method="POST", action="/buddeRequest/deleteRequest")
+    
+    input(type="hidden", name="_csrf", value=csrftoken)
+    input(type="hidden", name="requestedUserId", value=user_id_of_requested)
+    input(type="submit", value="Delete Budde Request")
