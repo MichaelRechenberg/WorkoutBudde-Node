@@ -686,7 +686,6 @@ router.get('/profile/viewFriends', (req, res)=>{
 router.post('/buddeRequest/makeRequest/', function(req, res){
     //Only process the request if the user is logged in
     if(req.session.auth){
-      console.log(req.body);
       let message = req.session.firstname + ' ' + req.session.lastname + ' would like to be your Budde!';
       let queryObj = {
         text: "INSERT INTO BuddeRequests (owner_user_id, message, sender_name, other_user_id) VALUES ($1, $2, $3, $4)",
@@ -707,13 +706,12 @@ router.post('/buddeRequest/makeRequest/', function(req, res){
     }
 });
 
-//TODO: Change req.body.recievingUserId to req.session.user_id for security reasons 
 
 //Process a BuddeRequest, making the two users Buddes
 router.post('/buddeRequest/makeBuddes', function(req, res){
   if(req.session.auth){
     //The user_id of the user that is logged in
-    var loggedInUserId = req.body.recievingUserId;
+    var loggedInUserId = req.session.user_id;
     //The user_id of the user that is asking to be a Budde
     var askingUserId = req.body.askingUserId;
 
