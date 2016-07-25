@@ -1,4 +1,6 @@
 include mixins/makeBuddeRequest
+include mixins/deletePendingRequestForm
+
 html
   head
     title=user.firstname + ' ' + user.lastname
@@ -31,6 +33,7 @@ html
           else  
             if requestPending
               p Budde Request Pending
+              +deletePendingRequestForm(user_id)
             else
               p Would you like to be Buddes?
               +makeBuddeRequestForm(user_id)

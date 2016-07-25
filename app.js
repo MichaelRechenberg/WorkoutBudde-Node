@@ -707,6 +707,8 @@ router.post('/buddeRequest/makeRequest/', function(req, res){
     }
 });
 
+//TODO: Change req.body.recievingUserId to req.session.user_id for security reasons 
+
 //Process a BuddeRequest, making the two users Buddes
 router.post('/buddeRequest/makeBuddes', function(req, res){
   if(req.session.auth){
@@ -731,6 +733,29 @@ router.post('/buddeRequest/makeBuddes', function(req, res){
     
   }
   res.end();
+});
+
+//Process a Budde Request, deleting the pending request
+router.post('/buddeRequest/deleteRequest', function(req, res){
+    if(req.session.auth){
+      console.log(req.body);
+      //The user_id of the user that is logged in
+      var loggedInUserId = req.session.user_id;
+      //The user_id of the user that was being asked to be a Budde
+      var requestedUserId = req.body.requestedUserId;
+      
+      var queryObj = {
+        text: "DELETE FROM BuddeRequests WHERE owner_user_id=$1 AND other_user_id=$2",
+        values: [requestedUserId, loggedInUserId]
+      };
+
+      db.none(queryObj)
+        .catch((reason)=>{
+          console.log(reason);
+      });
+     
+    }
+    res.end();
 });
 
 //Catch-all route to display a 404

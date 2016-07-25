@@ -1,6 +1,28 @@
+/**
+  Takes any forms relating to Buddes (Create BuddeRequest, Delete
+    a BuddeRequest, Delete a Budde), and makes the form via AJAX call
+  */
+
 "use strict"
 $(document).ready(function(){  
-  var forms = document.querySelectorAll(".budde-request-form");
+  var buddeRequestForms = document.querySelectorAll(".budde-request-form");
+  var deleteBuddeRequestForm = document.querySelectorAll(".delete-budde-request-form");
+  var deleteBuddeForm = document.querySelectorAll(".delete-budde-form");
+  makeFormAjax(buddeRequestForms);
+  makeFormAjax(deleteBuddeRequestForm);
+  makeFormAjax(deleteBuddeForm);
+});
+
+/**
+  Takes a NodeList as a parameter and makes an ajax request
+  to the "action" attribute of the form rather than the
+  default behavior
+
+  The CSRF Token must be the first input and the Submit input
+  mas be the last input element of the form
+  */
+function makeFormAjax(forms){
+
   for(var i = 0; i < forms.length; i++){
     forms[i].addEventListener('click', function(evt){
         evt.preventDefault();
@@ -29,4 +51,4 @@ $(document).ready(function(){
         http.send(JSON.stringify(data));
     });
   }
-});
+}
