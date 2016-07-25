@@ -1,5 +1,6 @@
 include mixins/makeBuddeRequest
 include mixins/deletePendingRequestForm
+include mixins/deleteBuddeForm
 
 html
   head
@@ -30,6 +31,7 @@ html
         else 
           if isFriend
             p You and #{user.firstname} are Buddes!
+            +deleteBuddeForm(user_id)
           else  
             if requestPending
               p Budde Request Pending

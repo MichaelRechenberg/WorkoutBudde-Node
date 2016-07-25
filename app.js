@@ -738,7 +738,6 @@ router.post('/buddeRequest/makeBuddes', function(req, res){
 //Process a Budde Request, deleting the pending request
 router.post('/buddeRequest/deleteRequest', function(req, res){
     if(req.session.auth){
-      console.log(req.body);
       //The user_id of the user that is logged in
       var loggedInUserId = req.session.user_id;
       //The user_id of the user that was being asked to be a Budde
@@ -754,6 +753,30 @@ router.post('/buddeRequest/deleteRequest', function(req, res){
           console.log(reason);
       });
      
+    }
+    res.end();
+});
+
+//Process a Budde Request, making the logged in user and the
+//  previous user no longer Buddes
+router.post('/buddeRequest/deleteBudde', function(req, res){
+    if(req.session.auth){
+      //The user_id of the user that is logged in
+      var loggedInUserId = req.session.user_id;
+      //The user_id of the user that was being asked to be a Budde
+      var requestedUserId = req.body.requestedUserId;
+     
+      //Delete both rows within the Buddes table that store friendship 
+      db.tx(function(t){
+        
+        var deleteBuddeRow1 = this.none("DELETE FROM Buddes WHERE user_1=$1 AND user_2=$2", [loggedInUserId, requestedUserId]);
+        var deleteBuddeRow2 = this.none("DELETE FROM Buddes WHERE user_1=$1 AND user_2=$2", [requestedUserId, loggedInUserId]);
+        this.batch([deleteBuddeRow1, deleteBuddeRow2]);
+        })
+        .catch(function(reason){
+          console.log(reason);
+      });
+       
     }
     res.end();
 });

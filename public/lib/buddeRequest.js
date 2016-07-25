@@ -8,6 +8,7 @@ $(document).ready(function(){
   var buddeRequestForms = document.querySelectorAll(".budde-request-form");
   var deleteBuddeRequestForm = document.querySelectorAll(".delete-budde-request-form");
   var deleteBuddeForm = document.querySelectorAll(".delete-budde-form");
+  console.log(deleteBuddeForm);
   makeFormAjax(buddeRequestForms, "Budde Request Made");
   makeFormAjax(deleteBuddeRequestForm, "Deleted Budde Request");
   makeFormAjax(deleteBuddeForm, "Removed Budde");

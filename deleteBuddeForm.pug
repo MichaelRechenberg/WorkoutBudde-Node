@@ -1,0 +1,6 @@
+mixin deleteBuddeForm(user_id_of_requested)
+  form(id="deleteBuddeForm", class="delete-budde-form", method="POST", action="/buddeRequest/deleteBudde")
+    
+    input(type="hidden", name="_csrf", value=csrftoken)
+    input(type="hidden", name="requestedUserId", value=user_id_of_requested)
+    input(type="submit", value="Remove As Buddy?")
