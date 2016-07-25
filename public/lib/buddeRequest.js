@@ -8,9 +8,9 @@ $(document).ready(function(){
   var buddeRequestForms = document.querySelectorAll(".budde-request-form");
   var deleteBuddeRequestForm = document.querySelectorAll(".delete-budde-request-form");
   var deleteBuddeForm = document.querySelectorAll(".delete-budde-form");
-  makeFormAjax(buddeRequestForms);
-  makeFormAjax(deleteBuddeRequestForm);
-  makeFormAjax(deleteBuddeForm);
+  makeFormAjax(buddeRequestForms, "Budde Request Made");
+  makeFormAjax(deleteBuddeRequestForm, "Deleted Budde Request");
+  makeFormAjax(deleteBuddeForm, "Removed Budde");
 });
 
 /**
@@ -18,10 +18,14 @@ $(document).ready(function(){
   to the "action" attribute of the form rather than the
   default behavior
 
+  --forms The NodeList of form elements
+  --successMessage A string containing what you want to display 
+    after the request has been made ("Request Made", or "Deleted Request"...)
+
   The CSRF Token must be the first input and the Submit input
   mas be the last input element of the form
   */
-function makeFormAjax(forms){
+function makeFormAjax(forms, successMessage){
 
   for(var i = 0; i < forms.length; i++){
     forms[i].addEventListener('click', function(evt){
@@ -43,7 +47,7 @@ function makeFormAjax(forms){
         http.onreadystatechange = function(){
           if(http.readyState == 4 && http.status==200){
             console.log(evt.target);
-            evt.target.value = "Request Accepted!"
+            evt.target.value = successMessage; 
             evt.target.disabled = true;
             
           }
