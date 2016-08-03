@@ -342,7 +342,6 @@ router.get('/newuser/', function(req, res){
 //Process form information from New User Page
 //TODO: Make sure untrusted info is sanitized
 router.post('/newuser/', function(req, res){
-  console.log(req.body);
   var queryObj = {
     text: "SELECT user_id FROM users WHERE username=$1",
     values: [req.body.username]
@@ -351,12 +350,14 @@ router.post('/newuser/', function(req, res){
   //if the username has not been used before, insert into DB
   //In exercise-times, 0-Sun, 1-Mon,...6-Sat
   var user_id = null;
+  var firstname = null;
+  var lastname = null;
   db.none(queryObj)
     //insert main info
     .then(function(data){
         var values = helpers.convertReqToValuesObj(req);
         var insertObj = {
-          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, lat, lng, earth_coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<state>, $<zip_code>, $<lat>, $<lng>, $<earth_coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>) RETURNING user_id",
+          text: "INSERT INTO users (username, salt, password, firstname, lastname, street, city, state, zip_code, lat, lng, earth_coord, exer_swimming, exer_running, exer_lifting, exer_yoga, exer_cycling, exer_indoor_sports, exer_outdoor_sports, sun, sun_start_time, sun_end_time, mon, mon_start_time, mon_end_time, tues, tues_start_time, tues_end_time, wed, wed_start_time, wed_end_time, thurs, thurs_start_time, thurs_end_time, fri, fri_start_time, fri_end_time, sat, sat_start_time, sat_end_time, intensity) VALUES ($<username>, $<salt>, $<password>, $<firstname>, $<lastname>, $<street>, $<city>, $<state>, $<zip_code>, $<lat>, $<lng>, $<earth_coord^>, $<swimming>, $<running>, $<lifting>, $<yoga>, $<cycling>, $<indoor_sports>, $<outdoor_sports>, $<sun>, $<sun_start_time>, $<sun_end_time>, $<mon>, $<mon_start_time>, $<mon_end_time>, $<tues>, $<tues_start_time>, $<tues_end_time>, $<wed>, $<wed_start_time>, $<wed_end_time>, $<thurs>, $<thurs_start_time>, $<thurs_end_time>, $<fri>, $<fri_start_time>, $<fri_end_time>, $<sat>, $<sat_start_time>, $<sat_end_time>, $<intensity>) RETURNING user_id, firstname, lastname",
           values: values 
         };
         var a = "";
@@ -366,6 +367,8 @@ router.post('/newuser/', function(req, res){
     })
     .then(function(data){
         user_id = data.user_id;
+        firstname = data.firstname;
+        lastname = data.lastname;
         var queryObj = {
           text: "INSERT INTO ContactInfo (user_id, email, phone_num) VALUES ($1, $2, $3)",
           values: [data.user_id, req.body.email, req.body.phone_num]
@@ -377,7 +380,9 @@ router.post('/newuser/', function(req, res){
             //TODO: FirstName and Lastname?
             req.session.auth = true;
             req.session.user_id = user_id;
-            res.redirect('/');
+            req.session.firstname = firstname;
+            req.session.lastname = lastname;
+            res.redirect('/profile');
 
         })
     .catch(function(reason){
