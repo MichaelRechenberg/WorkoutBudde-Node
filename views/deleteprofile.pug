@@ -11,7 +11,7 @@ html
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
     link(rel="stylesheet", href="/css/style.css", type="text/css")
   body
-    div(class="jumbotron")
+    div(class="jumbotron, container-fluid")
       p Are you sure you want to delete your profile?
       p This action is permanent!
       form(id="delete-form", action="/profile/deleteProfile/", method="POST")
