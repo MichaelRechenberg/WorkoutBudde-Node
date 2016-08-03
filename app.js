@@ -342,6 +342,7 @@ router.get('/newuser/', function(req, res){
 //Process form information from New User Page
 //TODO: Make sure untrusted info is sanitized
 router.post('/newuser/', function(req, res){
+  console.log(req.body);
   var queryObj = {
     text: "SELECT user_id FROM users WHERE username=$1",
     values: [req.body.username]

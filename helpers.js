@@ -91,13 +91,13 @@ module.exports.convertReqToValuesObj= function(req){
         values.yoga = false;
         values.outdoor_sports = false;
         values.indoor_sports = false;
-        //ensure req.body.exercise is an array
-        if(typeof req.body.exercise == 'string'){
-            var temp = req.body.exercise;
-            req.body.exercise = [];
-            req.body.exercise.push(temp);
+        //ensure req.body.exercises is an array
+        if(typeof req.body.exercises == 'string'){
+            var temp = req.body.exercises;
+            req.body.exercises = [];
+            req.body.exercises.push(temp);
         }
-        req.body.exercise.forEach((val)=>{
+        req.body.exercises.forEach((val)=>{
           switch(val){
             case 'Swimming':
               values.swimming=true;

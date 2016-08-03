@@ -1,3 +1,4 @@
+include mixins/exerciseInputs
 html
   head
     title Create New WorkoutBudde Profile
@@ -64,14 +65,13 @@ html
             label Full-Day (Click this if you are free the whole day)
               input(class="fullDay", name="fullDay", type="checkbox", value=index)
             br
+        br
         fieldset(id="exercises")
-          -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"]
-          each exercise in exercises
-            label=exercise
-              input(class="form-control exercise_list", name="exercise", type="checkbox", value=exercise)
+          p Select at least one exercise
+          +exerciseFields()
         fieldset(id="intensity")
           each intensity in ["Casual", "Moderate", "Intense"]
-            label=intensity
+            label(style="margin:0 10px 0 0")=intensity
               input(class="form-control", name="intensity", type="radio", value=intensity[0], required)
         div(id="validationError")
         input(id="submit", type="submit", value="CREATE NEW USER")
