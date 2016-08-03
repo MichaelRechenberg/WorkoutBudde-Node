@@ -17,8 +17,8 @@ html
   body
     div(id="content-wrapper", class="container-fluid")   
       br
-      nav(id="navBar")
-        ul(class="row")
+      nav(id="navBar", class="row")
+        ul
           li(class="col-md-2")
             a(href="/") Main Page
           //Viewable only for logged in users
@@ -30,8 +30,8 @@ html
                 a(href="/logout") Logout
               li(class="col-md-2")
                 a(href="/profile/editProfile/") Edit Profile
-              li(class="col-md-2")
-                a(href="/profile/deleteProfile/" style="color:red") Delete Profile
+              li(class="col-md-2", style="background-color: #E81C4B")
+                a(href="/profile/deleteProfile/") Delete Profile
           br
 
       div(id="personalInfo", class="row")
