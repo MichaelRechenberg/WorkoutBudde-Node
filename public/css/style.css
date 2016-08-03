@@ -1,6 +1,7 @@
 h1 {
 	margin: auto;
 	text-align: center;
+  padding-top: 10px;
 }
 
 
@@ -52,6 +53,4 @@ margin:auto auto;
   margin: 10px 10px 10px 10px;
   width:100%;
 }
-
-
 

@@ -1,12 +1,23 @@
 html
   head
-    title Success
+    title Results
+    //jQuery library for Bootstrap
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js")
+    //Bootstrap Stylesheet Setup
+    link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+    //Javascript for Bootstrap
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js")
+    link(rel="stylesheet", href="/css/style.css", type="text/css")
   body
     h1 Buddes Near You
-    if links.prevPage 
-      a(href="/findBudde/submit/results?" + links.prevPage) Previous Page
+    div(class="container-fluid")
+      a(href="/findBudde") Search Again
       br
-    a(href="/findBudde/submit/results?" + links.nextPage) Next Page
+      if links.prevPage 
+        a(href="/findBudde/submit/results?" + links.prevPage) Previous Page
+        br
+      a(href="/findBudde/submit/results?" + links.nextPage) Next Page
+    br
     ul
       each user in results
         li
