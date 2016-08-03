@@ -3,6 +3,26 @@ h1 {
 	text-align: center;
 }
 
+
+nav {
+  background-color:#92A6AD;
+}
+
+nav ul{
+  list-style: none;
+  text-align: center;
+}
+
+nav ul li {
+  padding: 0px 1% 0px 1%;
+  margin: 0 1% 0 1%;
+}
+
+nav ul li a{
+color: #ffffff;
+}
+
+
 .center-align{
   width:100%;
   margin: auto;

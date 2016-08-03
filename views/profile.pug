@@ -16,38 +16,44 @@ html
     link(rel="stylesheet", href="/css/style.css", type="text/css")
   body
     div(id="content-wrapper", class="container-fluid")   
+      br
+      nav(id="navBar")
+        ul(class="row")
+          li(class="col-md-2")
+            a(href="/") Main Page
+          //Viewable only for logged in users
+          if loggedIn
+            if ownProfile
+              li(class="col-md-2")
+                a(href="/profile/viewFriends") View Friends
+              li(class="col-md-2")
+                a(href="/logout") Logout
+              li(class="col-md-2")
+                a(href="/profile/editProfile/") Edit Profile
+              li(class="col-md-2")
+                a(href="/profile/deleteProfile/" style="color:red") Delete Profile
+          br
+
       div(id="personalInfo", class="row")
-        div(class="col-md-2")
+        div(class="col-md-4")
           img(src="/img/dummyImage.png", alt="dummyImage", width="100px", height="100px")
-        div(id="first-last-name", class="col-md-8")
+        div(id="first-last-name", class="col-md-6")
           span=user.firstname + ' ' + user.lastname
-      br
-      //Viewable only for logged in users
-      a(href="/") Main Page
-      br
+
+      //User is logged in, handle if viewing friends profile
       if loggedIn
-        if ownProfile
-          a(href="/profile/viewFriends") View Friends
-          br
-          a(href="/logout") Logout
-          br
-          a(href="/profile/editProfile/") Edit Profile
-          br
-          a(href="/profile/deleteProfile/" style="color:red") Delete Profile
-        else 
-          if isFriend
-            p You and #{user.firstname} are Buddes!
-            +deleteBuddeForm(user_id)
-          else  
-            if requestPending
-              p Budde Request Pending
-              +deletePendingRequestForm(user_id)
-            else
-              p Would you like to be Buddes?
-              +makeBuddeRequestForm(user_id)
+        if isFriend==true
+          p You and #{user.firstname} are Buddes!
+          +deleteBuddeForm(user_id)
+        else if !ownProfile 
+          if requestPending
+            p Budde Request Pending
+            +deletePendingRequestForm(user_id)
+          else
+            p Would you like to be Buddes?
+            +makeBuddeRequestForm(user_id)
       else
         p Log or Create an Account to Ask to Be A Budde
-
       div(id="availability", class="row")
         table
           tr
