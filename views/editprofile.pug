@@ -68,11 +68,11 @@ html
           -var exercises = ["Swimming", "Running", "Lifting", "Yoga", "Cycling", "Indoor Sports", "Outdoor Sports"];
           each exercise in exercises
             -var suffix = exercise.toLowerCase();
-            label=exercise
+            label(style="margin:0 10px 0 0")=exercise
               if user['exer_' + suffix]
-                input(class="form-control exercise_list", name="exercise", type="checkbox", value=exercise, checked)
+                input(class="form-control exercise_list", name="exercises", type="checkbox", value=exercise, checked)
               else
-                input(class="form-control exercise_list", name="exercise", type="checkbox", value=exercise)
+                input(class="form-control exercise_list", name="exercises", type="checkbox", value=exercise)
         fieldset(id="intensity")
           each intensity in ["Casual", "Moderate", "Intense"]
             label=intensity
